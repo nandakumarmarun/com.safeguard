@@ -154,6 +154,13 @@
     justify-content: center;
 }
 
+/* .card-containers-1{
+      background-image: url('path/to/your/image.jpg');
+    background-size: cover; /* Cover the entire div */
+    /* background-repeat: no-repeat; /* Do not repeat the image */
+    /* background-position: center; Center the image */
+/* }  */
+
 
 
 /*===============carousel-Section================== */
