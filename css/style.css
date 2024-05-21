@@ -152,6 +152,12 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
+    border: none;
+   
+}
+
+.fe-container{
+    background: #b3afaf;
 }
 
 /* .card-containers-1{
