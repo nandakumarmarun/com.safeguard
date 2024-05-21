@@ -1,0 +1,25 @@
+.body{
+    overflow: hidden;
+}
+
+.banner-container {
+    height: 100vh;
+}
+
+.banner-left {
+    height: 90vh;
+    background-image: url('../bg/Safe.gif');
+    background-size: cover; /* Cover the entire div */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-position: center; /* Center the image */;
+    overflow: hidden;
+}
+
+.banner-right {
+    height: 100vh;
+    background-color: rgb(51, 49, 49);
+    background-size: cover; /* Cover the entire div */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-position: center; /* Center the image */;
+    overflow: hidden;
+}
