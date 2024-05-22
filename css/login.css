@@ -1,5 +1,21 @@
 body{
     overflow: hidden;
+    height: 100vh;
+    background-image:
+                linear-gradient(45deg,
+                    rgba(4, 8, 68, 0.75),
+                    rgba(8, 83, 156, 0.75)), 
+                      url('../bg/J4o.gif');
+    /* background-image: url('../bg/bg2.jpg'); */
+    background-size: cover; /* Cover the entire div */
+    background-repeat: no-repeat; /*Do not repeat the image*/
+    background-position: center; /* Center the image */
+}
+
+.create-text{
+    display: flex;
+    align-items: center;
+    justify-content: center;   
 }
 
 .banner-container {
@@ -33,4 +49,40 @@ body{
     align-items: center;
     justify-content: center;
     color: rgb(5, 50, 5);
+}
+
+.form-container-inner-1 {
+    height: 600px;
+    background-image: url('../bg/bg2.gif');
+    background-size: cover; /* Cover the entire div */
+    background-repeat: no-repeat; /*Do not repeat the image*/
+    background-position: center; /* Center the image */
+}
+
+.form-container-inner-2 {
+    height: 600px;
+    background: #343a40;
+}
+
+
+.form-container-inner-box{
+    width: 500px;
+}
+
+.title h3{
+color: white;
+}
+
+.form-container-inner-box a{
+    color: white;
+}
+
+.form-group input {
+    border: none;
+    border-radius: 0;
+}
+
+.form-container-inner-box button {
+    border: none;
+    border-radius: 0;
 }
