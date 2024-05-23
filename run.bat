@@ -1,1 +1,1 @@
-serve
+node serve.js

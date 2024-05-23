@@ -117,7 +117,7 @@ if (!this.Registraion) {
 			data : JSON.stringify(loginModel),
 			success : function(data) {
         localStorage.setItem('token', data.token);
-        location.href = "http://localhost:3000/HTML/new"
+        location.href = "http://localhost:80/HTML/new"
 				onSaveSuccess(data);
 			},
 			error : function(xhr, error) {
