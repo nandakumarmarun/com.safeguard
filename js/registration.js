@@ -1,7 +1,7 @@
 // Create a Form object only if one does not already exist. We create the
 // methods in a closure to avoid creating global variables.
-if (!this.Form) {
-  this.Form = {};
+if (!this.Registraion) {
+  this.Registraion = {};
 }
 
 (function () {
@@ -9,9 +9,17 @@ if (!this.Form) {
 
   var formContextPath =
     location.protocol + "//" + location.host + location.pathname;
-  
-  var createEditForm = $("#loginForm");
+
+  var createEditForm = $("#regForm");
   var deleteForm = $("#deleteForm");
+
+  var registrationModel = {
+    firstName: null,
+    lastName: null,
+    email: null,
+    login: null,
+    password: null,
+  };
 
   var loginModel = {
     login: null,
@@ -20,14 +28,21 @@ if (!this.Form) {
 
   // Specify the validation rules
   var validationRules = {
+    firstname: {
+      required: true,
+    },
+    email: {
+      required: true,
+    },
+    email: {
+      required: true,
+    },
     login: {
       required: true,
-      maxlength: 255,
     },
-
     password: {
       required: true,
-      maxlength: 255,
+      maxlength: 8,
     },
   };
 
@@ -69,11 +84,32 @@ if (!this.Form) {
     });
   });
 
-
-
   function createUpdateForm() {
-		loginModel.login = $('#form-name').val();
-		loginModel.password = $('#form-password').val();
+    console.log("hello")
+    registrationModel.firstName = $("#inputfirstname").val();
+    registrationModel.login = $("#inputusername").val();
+    registrationModel.lastName = $("#inputLastname").val();
+    registrationModel.email = $("#inputEmail").val();
+    registrationModel.password = $("#inputPassword").val();
+    $.ajax({
+      method: "POST",
+      url: "http://localhost:8081/api/v1/user/register",
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(registrationModel),
+      success: function (data) {
+          createEditForm.trigger("reset");
+          getToken(registrationModel)
+      },
+      error: function (xhr, error) {
+        onError(xhr, error);
+      },
+    });
+  }
+
+  
+  function getToken(data) {
+		loginModel.login = data.login
+		loginModel.password = data.password
 		$.ajax({
 			method : 'POST',
 			url : "http://localhost:8081/api/v1/auth/authenticate",
@@ -100,7 +136,7 @@ if (!this.Form) {
     window.location = formContextPath;
   }
 
-  Form.showModalPopup = function (el, id, action, obj) {
+  Registraion.showModalPopup = function (el, id, action, obj) {
     resetForm();
     if (id) {
       switch (action) {
@@ -122,7 +158,7 @@ if (!this.Form) {
     el.modal("show");
   };
 
-  Form.closeModalPopup = function (el) {
+  Registraion.closeModalPopup = function (el) {
     el.modal("hide");
   };
 

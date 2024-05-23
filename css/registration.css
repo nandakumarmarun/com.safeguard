@@ -1,0 +1,26 @@
+.banner-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.c-1{
+    width: 500px;
+}
+
+.c-2{
+    width: 500px;
+    height: 500px;
+    background-image: url('../bg/registrtaion.gif');
+    background-size: cover; /* Cover the entire div */
+    background-repeat: no-repeat; /*Do not repeat the image*/
+    background-position: center; /* Center the image */
+}
+
+.my-error-class {
+    color:#FF0000;  /* red */
+}
+.my-valid-class {
+    color:#00CC00; /* green */
+}
