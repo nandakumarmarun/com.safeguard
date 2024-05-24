@@ -97,6 +97,7 @@ if (!this.Registraion) {
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify(registrationModel),
       success: function (data) {
+        localStorage.setItem('userDTO', data);
         createEditForm.trigger("reset");
         getToken(registrationModel)
       },
