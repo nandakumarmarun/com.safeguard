@@ -97,34 +97,60 @@ if (!this.Registraion) {
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify(registrationModel),
       success: function (data) {
-          createEditForm.trigger("reset");
-          getToken(registrationModel)
+        createEditForm.trigger("reset");
+        getToken(registrationModel)
       },
       error: function (xhr, error) {
-        onError(xhr, error);
+        // onError(xhr, error);
+        Swal.fire({
+          title: xhr.responseText
+        });
       },
     });
   }
 
-  
+
   function getToken(data) {
-		loginModel.login = data.login
-		loginModel.password = data.password
-		$.ajax({
-			method : 'POST',
-			url : "http://localhost:8081/api/v1/auth/authenticate",
-			contentType : "application/json; charset=utf-8",
-			data : JSON.stringify(loginModel),
-			success : function(data) {
+    loginModel.login = data.login
+    loginModel.password = data.password
+    $.ajax({
+      method: 'POST',
+      url: "http://localhost:8081/api/v1/auth/authenticate",
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(loginModel),
+      success: function (data) {
         localStorage.setItem('token', data.token);
-        location.href = "http://localhost:80/HTML/new"
-				onSaveSuccess(data);
-			},
-			error : function(xhr, error) {
-				onError(xhr, error);
-			}
-		});
-	}
+        // onSaveSuccess(data);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Signed in successfully"
+        });
+        sample();
+      },
+      error: function (xhr, error) {
+      }
+    });
+  }
+
+  const delay = (delayInms) => {
+    return new Promise(resolve => setTimeout(resolve, delayInms));
+  };
+
+  const sample = async () => {
+    let delayres = await delay(3000);
+    location.href = "http://localhost:80/HTML/new"
+  };
 
   // function onSaveSuccess(result) {
   //   // reloading page to see the updated data

@@ -81,14 +81,41 @@ if (!this.Form) {
 			data : JSON.stringify(loginModel),
 			success : function(data) {
         localStorage.setItem('token', data.token);
-        location.href = "http://localhost:80/HTML/new"
-				onSaveSuccess(data);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Signed in successfully"
+        });
+        sample();
 			},
 			error : function(xhr, error) {
-				onError(xhr, error);
+				Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Check Your Credentials!",
+        });
 			}
 		});
 	}
+
+  const delay = (delayInms) => {
+    return new Promise(resolve => setTimeout(resolve, delayInms));
+  };
+
+  const sample = async () => {
+    let delayres = await delay(3000);
+    location.href = "http://localhost:80/HTML/new"
+  };
 
   // function onSaveSuccess(result) {
   //   // reloading page to see the updated data
