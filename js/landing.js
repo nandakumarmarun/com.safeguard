@@ -1,4 +1,14 @@
 
 $('.carousel').carousel({
-    interval: 500
-  })
+  interval: 500
+})
+
+
+
+
+
+$(document).ready(function () {
+  
+
+  
+});

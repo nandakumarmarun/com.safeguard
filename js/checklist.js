@@ -58,8 +58,51 @@ if (!this.Registraion) {
     },
   };
 
+
+
   $(document).ready(function () {
     // Define an array of contents to append
+
+
+
+
+    $('#checklistTable').on('click', '.edit1', function () {
+      const $row = $(this).closest('tr');
+      const $icon = $(this).find('i');
+
+      if ($icon.hasClass('fa-pen-to-square')) {
+        switchToEditMode2($row);
+        // Optionally change the icon to a save icon here
+        $icon.removeClass('fa-pen-to-square').addClass('fa-save');
+      } else {
+        saveRow2($row);
+        // Optionally change the icon back to edit icon here
+        $icon.removeClass('fa-save').addClass('fa-pen-to-square');
+      }
+    });
+
+
+
+    $('#checklistTable').on('click', '.edit', function () {
+      const $row = $(this).closest('tr');
+      if ($(this).text() === 'Edit') {
+        switchToEditMode($row);
+      } else {
+        saveRow($row);
+      }
+    });
+
+    $('#checklistcollapseTable').on('click', '.edit', function () {
+      const $row = $(this).closest('tr');
+      if ($(this).text() === 'Edit') {
+        switchToEditMode($row);
+      } else {
+        saveRow($row);
+      }
+    });
+
+
+
 
     $("#addclit").on("click", function () {
       console.log("Button clicked");
@@ -76,6 +119,10 @@ if (!this.Registraion) {
 
     loadTable();
   });
+
+
+
+
 
   function loadTable() {
     $("#checklistTable").html(" ");
@@ -95,8 +142,8 @@ if (!this.Registraion) {
         '"><i class="fa-regular fa-square-plus"></i></a>' +
         value.checklistName +
         "</td>" +
-        '<td class="col-3"><div class="cd-center"><button class="btn"><i class="fa-regular fa-pen-to-square"></i></button>' +
-        '<button class="btn m-2"><i class="fa-solid fa-trash"></i></button>' +
+        '<td class="col-3 actions"><div class="cd-center actions"><button class="btn edit1"><i class="fa-regular fa-pen-to-square"></i></button>' +
+        '<button class="btn m-2 actions"><i class="fa-solid fa-trash"></i></button>' +
         "</td></tr>";
 
       div += tableRow;
@@ -112,7 +159,7 @@ if (!this.Registraion) {
         '<th class="col-3">Question</th>' +
         '<th class="col-3">Value</th>' +
         '<th class="col-3">Priority</th>' +
-        '<th class="col-3 cd-center">Actions</th></tr></thead><tbody>';
+        '<th class="col-3 cd-center">Actions</th></tr></thead><tbody id="checklistcollapseTable">';
 
       div += innerrows;
 
@@ -122,11 +169,11 @@ if (!this.Registraion) {
           item.checklistItemName +
           '</td><td class="col-3">' +
           item.value +
-          '</td><td class="col-3">' +
+          '</td><td class="col-3 dropdown-column">' +
           item.priorityLevel +
           "</td>" +
-          '<td class="col-3"><div class="cd-center"><button class="btn btn-warning m-2">Edit</button>' +
-          '<button class="btn btn-danger m-2">Delete</button></div>' +
+          '<td class="col-3 actions"><div class="cd-center actions"><button class="btn btn-warning m-2 edit">Edit</button>' +
+          '<button class="btn btn-danger m-2 actions">Delete</button></div>' +
           "</td></tr>";
       });
 
@@ -136,6 +183,8 @@ if (!this.Registraion) {
 
     $("#checklistTable").append(div);
   }
+
+
 
   function loadToLocalStorge() {
     let newdata = [];
@@ -178,10 +227,8 @@ if (!this.Registraion) {
     }
   }
 
-  const random_uuid = uuidv4();
 
   // Print the UUID
-
   function uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
@@ -192,6 +239,7 @@ if (!this.Registraion) {
       }
     );
   }
+
 
   function savechecklist() {
     let newdata = [];
@@ -224,6 +272,8 @@ if (!this.Registraion) {
     $("#priority").val($('#priority option:first').val());
     $("#checklistN").val("");
   }
+
+
 
   function innerTableLload() {
     let checklistData1 =
@@ -267,6 +317,115 @@ if (!this.Registraion) {
     $("#innnerTableItems").append(div);
   }
 
+
+  function switchToEditMode(row) {
+    row.find('td').each(function () {
+      const $cell = $(this);
+      if ($cell.hasClass('actions')) return;
+
+      const currentText = $cell.text();
+      const $input = $('<input>', {
+        type: 'text',
+        value: currentText
+      });
+      $cell.html($input);
+    });
+    row.find('.edit').text('Save');
+  }
+
+
+  function switchToEditMode(row) {
+    row.find('td').each(function () {
+      const $cell = $(this);
+      if ($cell.hasClass('actions')) return;
+      const currentText = $cell.text().trim();
+
+      if ($cell.hasClass('dropdown-column')) {
+        // Define options for the dropdown
+        const options = [
+          { value: 'HIGH', text: 'HIGH' },
+          { value: 'MEADIUM', text: 'MEADIUM' },
+          { value: 'LOW', text: 'LOW' }
+        ];
+
+        const $select = $('<select>', {
+          class: 'form-control'
+        });
+
+        // Populate dropdown with options
+        options.forEach(option => {
+          const $option = $('<option>', {
+            value: option.value,
+            text: option.text
+          });
+          $select.append($option);
+        });
+        $select.val(currentText);
+        $cell.empty().append($select);
+      } else {
+        const $input = $('<input>', {
+          type: 'text',
+          value: currentText,
+          class: 'form-control'
+        });
+        $cell.empty().append($input);
+      }
+
+    });
+    row.find('.edit').text('Save');
+  }
+
+
+
+  function switchToEditMode2(row) {
+    row.find('td').each(function () {
+      const $cell = $(this);
+      if ($cell.hasClass('actions')) return;
+
+      const collapseButton = $cell.find('[data-bs-toggle="collapse"]').detach();
+      const currentText = $cell.text();
+      const $input = $('<input>', {
+        type: 'text',
+        value: currentText
+      });
+      $cell.empty().append(collapseButton).append($input);
+    });
+    row.find('.edit').text('<i class="fa-solid fa-check"></i>');
+  }
+
+
+
+  function saveRow($row) {
+    $row.find('td').each(function () {
+      const $cell = $(this);
+      if ($cell.hasClass('actions')) return;
+
+      const $input = $cell.find('input');
+      if ($input.length) {
+        $cell.text($input.val());
+      }
+    });
+    $row.find('.edit').text('Edit');
+  }
+
+
+
+  function saveRow2($row) {
+    $row.find('td').each(function () {
+      const $cell = $(this);
+      if ($cell.hasClass('actions')) return;
+
+      const collapseButton = $cell.find('[data-bs-toggle="collapse"]').detach();
+      const $input = $cell.find('input');
+      const newText = $input.val();
+      $cell.empty().append(collapseButton).append(document.createTextNode(newText));
+    });
+    $row.find('.edit').text('Edit');
+  }
+
+
+
+
   function getToken(data) {
     loginModel.login = data.login;
     loginModel.password = data.password;
@@ -295,7 +454,7 @@ if (!this.Registraion) {
         });
         sample();
       },
-      error: function (xhr, error) {},
+      error: function (xhr, error) { },
     });
   }
 
