@@ -62,7 +62,7 @@ if (!this.Registraion) {
 
   $(document).ready(function () {
     // Define an array of contents to append
-   
+
     $('#checklistTable').on('click', '.edit1', function () {
       const $row = $(this).closest('tr');
       const $icon = $(this).find('i');
@@ -104,7 +104,12 @@ if (!this.Registraion) {
       console.log("Button clicked");
       loadToLocalStorge();
       innerTableLload();
-      // loadTable();
+    });
+
+    $("#modelAddbtn").on("click", function () {
+      console.log("Button clicked");
+      loadModelToLocalStorge();
+      innerTablemodelload();
     });
 
 
@@ -138,9 +143,11 @@ if (!this.Registraion) {
         '"><i class="fa-regular fa-square-plus"></i></a>' +
         value.checklistName +
         "</td>" +
-        '<td class="col-3 actions"><div class="cd-center actions"><button class="btn edit1"><i class="fa-regular fa-pen-to-square"></i></button>' +
-        '<button class="btn m-2 actions"><i class="fa-solid fa-trash"></i></button>' +
-        "</td></tr>";
+        '<td class="col-3 actions"><div class="cd-center actions">'
+        + '<button class="btn m-1 edit1"><i class="fa-regular fa-pen-to-square"></i></button>'
+        + '<button class="btn m-1 actions"><i class="fa-solid fa-trash"></i></button>'
+        + '<button class="btn m-1 actions" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="fa-solid fa-circle-plus"></i></button>'
+        + '</td></tr>';
 
       div += tableRow;
 
@@ -197,6 +204,47 @@ if (!this.Registraion) {
       checkListItemDTO.checklistItemName = $("#checklistitemName").val();
       checkListItemDTO.value = parseFloat($("#value").val());
       checkListItemDTO.priorityLevel = $("#priority").val();
+
+      checklist.checkListItemDTO.push(checkListItemDTO);
+      newdata.push(checklist);
+      localStorage.setItem("checklistData", JSON.stringify(newdata));
+      // Optional: Save registrationModel to localStorage or handle it accordingly
+      console.log("Registration Model Data: ", checklistData1);
+    } else {
+      checklist = null;
+      // Fill registrationModel with values from the form
+      checkListItemDTO.id = uuidv4(); // Auto-increment ID based on the existing items count
+      checkListItemDTO.checklistItemName = $("#checklistitemName").val();
+      checkListItemDTO.value = parseFloat($("#value").val());
+      checkListItemDTO.priorityLevel = $("#priority").val();
+
+      checklist = {
+        id: uuidv4(),
+        checklistName: $("#checklistN").val(),
+        checkListItemDTO: [],
+      };
+
+      checklist.checkListItemDTO.push(checkListItemDTO);
+      newdata.push(checklist);
+      localStorage.setItem("checklistData", JSON.stringify(newdata));
+      // Optional: Save registrationModel to localStorage or handle it accordingly
+      console.log("Registration Model Data: ", checklistData1);
+    }
+  }
+
+  function loadModelToLocalStorge() {
+    let newdata = [];
+
+    let checklistData1 =
+      JSON.parse(localStorage.getItem("checklistData")) || [];
+
+    if (checklistData1.length !== 0) {
+      checklist = checklistData1[0];
+      // Fill registrationModel with values from the form
+      checkListItemDTO.id = uuidv4(); // Auto-increment ID based on the existing items count
+      checkListItemDTO.checklistItemName = $("#checklistitemNameModel").val();
+      checkListItemDTO.value = parseFloat($("#valueModel").val());
+      checkListItemDTO.priorityLevel = $("#priorityModel").val();
 
       checklist.checkListItemDTO.push(checkListItemDTO);
       newdata.push(checklist);
@@ -299,6 +347,38 @@ if (!this.Registraion) {
     });
     tbody += checklistContent2;
     $("#checklistcollapse").append(tbody);
+    $("#checklistitemName").val("");
+    $("#value").val("");
+    $("#priority").val($('#priority option:first').val());
+  }
+
+
+  function innerTablemodelload() {
+    let checklistData1 =
+      JSON.parse(localStorage.getItem("checklistData")) || [];
+    var length = checklistData1.length - 1;
+    var value = checklistData1[length];
+
+    $("#tbodyCheckListitemCodel").html(" ");
+    var tbody = "";
+
+    var checklistContent2 = "";
+
+    $.each(value.checkListItemDTO, function (itemIndex, item) {
+      checklistContent2 +=
+        '<tr><td class="col-3">' +
+        item.checklistItemName +
+        '</td><td class="col-3">' +
+        item.value +
+        '</td><td class="col-3 dropdown-column">' +
+        item.priorityLevel +
+        "</td>"
+        + '<td class="col-3 actions"><div class="cd-center actions"><button class="btn btn-warning m-2 edit">Edit</button>' +
+        '<button class="btn btn-danger m-2 actions">Delete</button></div>' +
+        "</td></tr>";
+    });
+    tbody += checklistContent2;
+    $("#tbodyCheckListitemCodel").append(tbody);
     $("#checklistitemName").val("");
     $("#value").val("");
     $("#priority").val($('#priority option:first').val());

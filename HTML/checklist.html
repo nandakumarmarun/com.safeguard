@@ -15,6 +15,9 @@
 </head>
 
 <body>
+
+  <!-- nav bar -->
+
   <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
     <div class="container-fluid">
       <img src="../assets/logo.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top" />
@@ -32,6 +35,8 @@
       </div>
     </div>
   </nav>
+
+  <!-- offcanvas -->
 
   <div class="offcanvas offcanvas-start of-60" tabindex="-2" id="offcanvasExample"
     aria-labelledby="offcanvasExampleLabel" style="width: 60%">
@@ -84,6 +89,8 @@
     </div>
   </div>
 
+  <!-- create button -->
+
   <div class="container-fluid mt-2 ms-auto">
     <div class="row m-2 mt-2">
       <button class="btn btn-success col-1 btn-create mt-2" type="button" data-bs-toggle="offcanvas"
@@ -92,6 +99,8 @@
       </button>
     </div>
   </div>
+
+  <!-- Table -->
 
   <div class="checklist-table p-3">
     <table class="table align-middle col-12 checklisttb ">
@@ -104,6 +113,57 @@
       <tbody id="checklistTable"></tbody>
     </table>
   </div>
+
+
+  <!-- model -->
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add New Question</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <label class="m-2">Question</label>
+            <div class="input-group mb-3">
+              <input id="checklistitemNameModel" type="text" class="form-control mt-2" placeholder="Enter Question"
+                aria-label="Username" />
+              <input id="valueModel" type="text" class="form-control mt-2" placeholder="Enter Score"
+                aria-label="Server" />
+              <select id="priorityModel" class="form-select mt-2" id="inputGroupSelect01">
+                <option value="HIGH">HIGH</option>
+                <option value="MEADIUM">MEADIUM</option>
+                <option value="LOW">LOW</option>
+              </select>
+              <button class="btn btn-outline-secondary mt-2" id="modelAddbtn" type="button">
+                add
+              </button>
+            </div>
+          </div>
+          <div class="innnerTableItems" id="innnermodelTableItems">
+            <table class="table align-middle col-12 checklisttb ">
+              <thead class="">
+                <tr>
+                  <th class="col-3">Question</th>
+                  <th class="col-3">Value</th>
+                  <th class="col-3">Priority</th>
+                  <th class="col-3 cd-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyCheckListitemCodel"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">save item</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
