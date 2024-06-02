@@ -26,6 +26,8 @@ if (!this.Registraion) {
     checkListItemDTO: [],
   };
 
+  var rawId;
+
   // Specify the validation rules
   var validationRules = {
     firstname: {
@@ -100,12 +102,44 @@ if (!this.Registraion) {
 
 
 
+
+    $("#checklistTable").on('click', '.add', function (event) {
+      // Access the clicked button's parent table row
+      var clickedRow = $(this).closest('tr');
+      // Extract the data-id from the table row
+      var dataId = clickedRow.data('id');
+      rawId = dataId
+    });
+
+
+
+
+
+
+
+
+    // $('#tbodyCheckListitemCodel').on('click', '.edit', function () {
+    //   const $row = $(this).closest('tr');
+    //   if ($(this).text() === 'Edit') {
+    //     switchToEditMode($row);
+    //   } else {
+    //     saveRow($row);
+    //   }
+    // });
+
+
+
+
+    // offcanvas add
     $("#addclit").on("click", function () {
       console.log("Button clicked");
       loadToLocalStorge();
       innerTableLload();
     });
 
+
+
+    // offcanvas add
     $("#modelAddbtn").on("click", function () {
       console.log("Button clicked");
       loadModelToLocalStorge();
@@ -114,11 +148,23 @@ if (!this.Registraion) {
 
 
 
+
+
     $("#btnsvecheck").on("click", function () {
       console.log("Button clicked");
       savechecklist();
       loadTable();
     });
+
+
+    $("#addBtnNewitem").on("click", function () {
+      console.log("Button clicked");
+      addNewItem();
+      loadTable();
+    });
+
+
+
 
     loadTable();
   });
@@ -135,8 +181,9 @@ if (!this.Registraion) {
       var checklistContent2 = "";
 
       var tableRow =
-        "<tr>" +
-        '<td class="col-9"><a class="btn  m-2" data-bs-toggle="collapse" role="button" href="#' +
+        '<tr data-id="'
+        + value.id
+        + '"><td class="col-9" data-column="checklisName"><a class="btn  m-2" data-bs-toggle="collapse" role="button" href="#' +
         value.id +
         '"aria-expanded="false" aria-controls="' +
         value.id +
@@ -146,7 +193,7 @@ if (!this.Registraion) {
         '<td class="col-3 actions"><div class="cd-center actions">'
         + '<button class="btn m-1 edit1"><i class="fa-regular fa-pen-to-square"></i></button>'
         + '<button class="btn m-1 actions"><i class="fa-solid fa-trash"></i></button>'
-        + '<button class="btn m-1 actions" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="fa-solid fa-circle-plus"></i></button>'
+        + '<button class="btn m-1 add actions" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="fa-solid fa-circle-plus"></i></button>'
         + '</td></tr>';
 
       div += tableRow;
@@ -188,8 +235,6 @@ if (!this.Registraion) {
 
     $("#checklistTable").append(div);
   }
-
-
 
   function loadToLocalStorge() {
     let newdata = [];
@@ -255,9 +300,9 @@ if (!this.Registraion) {
       checklist = null;
       // Fill registrationModel with values from the form
       checkListItemDTO.id = uuidv4(); // Auto-increment ID based on the existing items count
-      checkListItemDTO.checklistItemName = $("#checklistitemName").val();
-      checkListItemDTO.value = parseFloat($("#value").val());
-      checkListItemDTO.priorityLevel = $("#priority").val();
+      checkListItemDTO.checklistItemName = $("#checklistitemNameModel").val();
+      checkListItemDTO.value = parseFloat($("#valueModel").val());
+      checkListItemDTO.priorityLevel = $("#priorityModel").val();
 
       checklist = {
         id: uuidv4(),
@@ -285,6 +330,10 @@ if (!this.Registraion) {
       }
     );
   }
+
+
+
+
 
 
   function savechecklist() {
@@ -321,6 +370,11 @@ if (!this.Registraion) {
 
 
 
+
+
+
+
+
   function innerTableLload() {
     let checklistData1 =
       JSON.parse(localStorage.getItem("checklistData")) || [];
@@ -341,10 +395,13 @@ if (!this.Registraion) {
         '</td><td class="col-3 dropdown-column">' +
         item.priorityLevel +
         "</td>"
-        + '<td class="col-3 actions"><div class="cd-center actions"><button class="btn btn-warning m-2 edit">Edit</button>' +
+        + '<td class="col-3 actions"><div class="cd-center actions">' +
         '<button class="btn btn-danger m-2 actions">Delete</button></div>' +
         "</td></tr>";
     });
+
+    {/* <button class="btn btn-warning m-2 edit">Edit</button> */ }
+
     tbody += checklistContent2;
     $("#checklistcollapse").append(tbody);
     $("#checklistitemName").val("");
@@ -373,15 +430,18 @@ if (!this.Registraion) {
         '</td><td class="col-3 dropdown-column">' +
         item.priorityLevel +
         "</td>"
-        + '<td class="col-3 actions"><div class="cd-center actions"><button class="btn btn-warning m-2 edit">Edit</button>' +
+        + '<td class="col-3 actions"><div class="cd-center actions">' +
         '<button class="btn btn-danger m-2 actions">Delete</button></div>' +
         "</td></tr>";
     });
+
+    // <button class="btn btn-warning m-2 edit">Edit</button>
+
     tbody += checklistContent2;
     $("#tbodyCheckListitemCodel").append(tbody);
-    $("#checklistitemName").val("");
-    $("#value").val("");
-    $("#priority").val($('#priority option:first').val());
+    $("#checklistitemNameModel").val("");
+    $("#valueModel").val("");
+    $("#priorityModel").val($('#priority option:first').val());
   }
 
 
@@ -472,8 +532,6 @@ if (!this.Registraion) {
       checkListItemDTO.id = $row.data('id')
 
 
-
-
       const $select = $cell.find('select');
       if ($select.length) {
         if (columnName === 'priorityLevel') {
@@ -511,18 +569,87 @@ if (!this.Registraion) {
 
 
 
+  function addNewItem() {
+
+    console.log('fetch newly add data', checkListItemDTO);
+    let checklistitems = []
+    checklistitems = JSON.parse(localStorage.getItem("checklistData")) || [];
+
+    console.log('find need raw id need  to add new item ');
+    var hrefId = rawId
+
+    console.log('fetch all checklist');
+    let checklistData1 = []
+    checklistData1 = JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
+
+    console.log('find  of index check list from all list  to update ');
+    let itemIndex1 = checklistData1.findIndex(item => item.id === hrefId);
+    console.log('find checklsit  using id');
+    var itemdata = checklistData1.find(item => item.id === hrefId);
+
+    console.log('push new data to checklist');
+    $.each(checklistitems[0].checkListItemDTO, function (index, value) {
+      itemdata.checkListItemDTO.push(value)
+    });
+
+    console.log('save index position');
+    checklistData1[itemIndex1] = itemdata
+
+    console.log('save alldata');
+    localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
+    localStorage.removeItem("checklistData");
+    $('#exampleModal').modal('hide');
+    $("#tbodyCheckListitemCodel").html("");
+  }
+
+
+
+
+
+
+
+
+
+
   function saveRow2($row) {
+    var hrefId;
+    var checklistNamenew;
     $row.find('td').each(function () {
       const $cell = $(this);
       if ($cell.hasClass('actions')) return;
 
+      const columnName = $cell.data('column'); // Get the column name
+      hrefId = $row.data('id')
+
       const collapseButton = $cell.find('[data-bs-toggle="collapse"]').detach();
       const $input = $cell.find('input');
       const newText = $input.val();
+      checklistNamenew = newText;
       $cell.empty().append(collapseButton).append(document.createTextNode(newText));
     });
     $row.find('.edit').text('Edit');
+
+    let checklistData1 = []
+    checklistData1 = JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
+
+    let itemIndex1 = checklistData1.findIndex(item => item.id === hrefId);
+    var itemdata = checklistData1.find(item => item.id === hrefId);
+    itemdata.checklistName = checklistNamenew
+    checklistData1[itemIndex1] = itemdata
+    localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
   }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
