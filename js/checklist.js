@@ -60,63 +60,57 @@ if (!this.Registraion) {
     },
   };
 
-
-
   $(document).ready(function () {
     // Define an array of contents to append
 
-    $('#checklistTable').on('click', '.edit1', function () {
-      const $row = $(this).closest('tr');
-      const $icon = $(this).find('i');
-      if ($icon.hasClass('fa-pen-to-square')) {
+    $("#checklistTable").on("click", ".edit1", function () {
+      const $row = $(this).closest("tr");
+      const $icon = $(this).find("i");
+      if ($icon.hasClass("fa-pen-to-square")) {
         switchToEditMode2($row);
         // Optionally change the icon to a save icon here
-        $icon.removeClass('fa-pen-to-square').addClass('fa-save');
+        $icon.removeClass("fa-pen-to-square").addClass("fa-save");
       } else {
         saveRow2($row);
         // Optionally change the icon back to edit icon here
-        $icon.removeClass('fa-save').addClass('fa-pen-to-square');
+        $icon.removeClass("fa-save").addClass("fa-pen-to-square");
       }
     });
 
-
-    $('#checklistTable').on('click', '.edit', function () {
-      const $row = $(this).closest('tr');
-      if ($(this).text() === 'Edit') {
+    $("#checklistTable").on("click", ".edit", function () {
+      const $row = $(this).closest("tr");
+      if ($(this).text() === "Edit") {
         switchToEditMode($row);
       } else {
         saveRow($row);
       }
     });
 
-
-
-    $('#checklistcollapse').on('click', '.edit', function () {
-      const $row = $(this).closest('tr');
-      if ($(this).text() === 'Edit') {
+    $("#checklistcollapse").on("click", ".edit", function () {
+      const $row = $(this).closest("tr");
+      if ($(this).text() === "Edit") {
         switchToEditMode($row);
       } else {
         saveRow($row);
       }
     });
 
-
-
-
-    $("#checklistTable").on('click', '.add', function (event) {
+    $("#checklistTable").on("click", ".add", function (event) {
       // Access the clicked button's parent table row
-      var clickedRow = $(this).closest('tr');
+      var clickedRow = $(this).closest("tr");
       // Extract the data-id from the table row
-      var dataId = clickedRow.data('id');
-      rawId = dataId
+      var dataId = clickedRow.data("id");
+      rawId = dataId;
     });
 
-
-
-
-
-
-
+    $("#checklistTable").on("click", ".delete1", function (event) {
+      // Access the clicked button's parent table row
+      var clickedRow = $(this).closest("tr");
+      // Extract the data-id from the table row
+      var dataId = clickedRow.data("id");
+      deleteRow2(dataId);
+      loadTable();
+    });
 
     // $('#tbodyCheckListitemCodel').on('click', '.edit', function () {
     //   const $row = $(this).closest('tr');
@@ -127,17 +121,12 @@ if (!this.Registraion) {
     //   }
     // });
 
-
-
-
     // offcanvas add
     $("#addclit").on("click", function () {
       console.log("Button clicked");
       loadToLocalStorge();
       innerTableLload();
     });
-
-
 
     // offcanvas add
     $("#modelAddbtn").on("click", function () {
@@ -146,30 +135,19 @@ if (!this.Registraion) {
       innerTablemodelload();
     });
 
-
-
-
-
     $("#btnsvecheck").on("click", function () {
       console.log("Button clicked");
       savechecklist();
       loadTable();
     });
 
-
     $("#addBtnNewitem").on("click", function () {
       console.log("Button clicked");
       addNewItem();
       loadTable();
     });
-
-
-
-
     loadTable();
   });
-
-
 
   function loadTable() {
     $("#checklistTable").html(" ");
@@ -181,20 +159,20 @@ if (!this.Registraion) {
       var checklistContent2 = "";
 
       var tableRow =
-        '<tr data-id="'
-        + value.id
-        + '"><td class="col-9" data-column="checklisName"><a class="btn  m-2" data-bs-toggle="collapse" role="button" href="#' +
+        '<tr data-id="' +
+        value.id +
+        '"><td class="col-9" data-column="checklisName"><a class="btn  m-2" data-bs-toggle="collapse" role="button" href="#' +
         value.id +
         '"aria-expanded="false" aria-controls="' +
         value.id +
         '"><i class="fa-regular fa-square-plus"></i></a>' +
         value.checklistName +
         "</td>" +
-        '<td class="col-3 actions"><div class="cd-center actions">'
-        + '<button class="btn m-1 edit1"><i class="fa-regular fa-pen-to-square"></i></button>'
-        + '<button class="btn m-1 actions"><i class="fa-solid fa-trash"></i></button>'
-        + '<button class="btn m-1 add actions" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="fa-solid fa-circle-plus"></i></button>'
-        + '</td></tr>';
+        '<td class="col-3 actions"><div class="cd-center actions">' +
+        '<button class="btn m-1 edit1"><i class="fa-regular fa-pen-to-square"></i></button>' +
+        '<button class="btn m-1 delete1 actions"><i class="fa-solid fa-trash"></i></button>' +
+        '<button class="btn m-1 add actions" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="fa-solid fa-circle-plus"></i></button>' +
+        "</td></tr>";
 
       div += tableRow;
 
@@ -215,9 +193,9 @@ if (!this.Registraion) {
 
       $.each(value.checkListItemDTO, function (itemIndex, item) {
         checklistContent2 +=
-          '<tr data-id="'
-          + item.id
-          + '"><td class="col-3" data-column="checklistItemName">' +
+          '<tr data-id="' +
+          item.id +
+          '"><td class="col-3" data-column="checklistItemName">' +
           item.checklistItemName +
           '</td><td class="col-3" data-column="score">' +
           item.value +
@@ -225,7 +203,7 @@ if (!this.Registraion) {
           item.priorityLevel +
           "</td>" +
           '<td class="col-3 actions"><div class="cd-center actions"><button class="btn btn-primary m-2 edit">Edit</button>' +
-          '<button class="btn btn-danger m-2 actions">Delete</button></div>' +
+          '<button class="btn btn-danger m-2 delete actions">Delete</button></div>' +
           "</td></tr>";
       });
 
@@ -318,7 +296,6 @@ if (!this.Registraion) {
     }
   }
 
-
   // Print the UUID
   function uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -330,11 +307,6 @@ if (!this.Registraion) {
       }
     );
   }
-
-
-
-
-
 
   function savechecklist() {
     let newdata = [];
@@ -364,16 +336,9 @@ if (!this.Registraion) {
     $("#checklistcollapse").html("");
     $("#checklistitemName").val("");
     $("#value").val("");
-    $("#priority").val($('#priority option:first').val());
+    $("#priority").val($("#priority option:first").val());
     $("#checklistN").val("");
   }
-
-
-
-
-
-
-
 
   function innerTableLload() {
     let checklistData1 =
@@ -394,21 +359,22 @@ if (!this.Registraion) {
         item.value +
         '</td><td class="col-3 dropdown-column">' +
         item.priorityLevel +
-        "</td>"
-        + '<td class="col-3 actions"><div class="cd-center actions">' +
+        "</td>" +
+        '<td class="col-3 actions"><div class="cd-center actions">' +
         '<button class="btn btn-danger m-2 actions">Delete</button></div>' +
         "</td></tr>";
     });
 
-    {/* <button class="btn btn-warning m-2 edit">Edit</button> */ }
+    {
+      /* <button class="btn btn-warning m-2 edit">Edit</button> */
+    }
 
     tbody += checklistContent2;
     $("#checklistcollapse").append(tbody);
     $("#checklistitemName").val("");
     $("#value").val("");
-    $("#priority").val($('#priority option:first').val());
+    $("#priority").val($("#priority option:first").val());
   }
-
 
   function innerTablemodelload() {
     let checklistData1 =
@@ -429,8 +395,8 @@ if (!this.Registraion) {
         item.value +
         '</td><td class="col-3 dropdown-column">' +
         item.priorityLevel +
-        "</td>"
-        + '<td class="col-3 actions"><div class="cd-center actions">' +
+        "</td>" +
+        '<td class="col-3 actions"><div class="cd-center actions">' +
         '<button class="btn btn-danger m-2 actions">Delete</button></div>' +
         "</td></tr>";
     });
@@ -441,9 +407,8 @@ if (!this.Registraion) {
     $("#tbodyCheckListitemCodel").append(tbody);
     $("#checklistitemNameModel").val("");
     $("#valueModel").val("");
-    $("#priorityModel").val($('#priority option:first').val());
+    $("#priorityModel").val($("#priority option:first").val());
   }
-
 
   // function switchToEditMode(row) {
   //   row.find('td').each(function () {
@@ -460,198 +425,188 @@ if (!this.Registraion) {
   //   row.find('.edit').text('Save');
   // }
 
-
   function switchToEditMode(row) {
-    row.find('td').each(function () {
+    row.find("td").each(function () {
       const $cell = $(this);
-      if ($cell.hasClass('actions')) return;
+      if ($cell.hasClass("actions")) return;
       const currentText = $cell.text().trim();
 
-      if ($cell.hasClass('dropdown-column')) {
+      if ($cell.hasClass("dropdown-column")) {
         // Define options for the dropdown
         const options = [
-          { value: 'HIGH', text: 'HIGH' },
-          { value: 'MEADIUM', text: 'MEADIUM' },
-          { value: 'LOW', text: 'LOW' }
+          { value: "HIGH", text: "HIGH" },
+          { value: "MEADIUM", text: "MEADIUM" },
+          { value: "LOW", text: "LOW" },
         ];
 
-        const $select = $('<select>', {
-          class: 'form-control'
+        const $select = $("<select>", {
+          class: "form-control",
         });
 
         // Populate dropdown with options
-        options.forEach(option => {
-          const $option = $('<option>', {
+        options.forEach((option) => {
+          const $option = $("<option>", {
             value: option.value,
-            text: option.text
+            text: option.text,
           });
           $select.append($option);
         });
         $select.val(currentText);
         $cell.empty().append($select);
       } else {
-        const $input = $('<input>', {
-          type: 'text',
+        const $input = $("<input>", {
+          type: "text",
           value: currentText,
-          class: 'form-control'
+          class: "form-control",
         });
         $cell.empty().append($input);
       }
-
     });
-    row.find('.edit').text('Save');
+    row.find(".edit").text("Save");
   }
 
-
-
   function switchToEditMode2(row) {
-    row.find('td').each(function () {
+    row.find("td").each(function () {
       const $cell = $(this);
-      if ($cell.hasClass('actions')) return;
+      if ($cell.hasClass("actions")) return;
 
       const collapseButton = $cell.find('[data-bs-toggle="collapse"]').detach();
       const currentText = $cell.text();
-      const $input = $('<input>', {
-        type: 'text',
-        value: currentText
+      const $input = $("<input>", {
+        type: "text",
+        value: currentText,
       });
       $cell.empty().append(collapseButton).append($input);
     });
-    row.find('.edit').text('<i class="fa-solid fa-check"></i>');
+    row.find(".edit").text('<i class="fa-solid fa-check"></i>');
   }
 
-
-
   function saveRow($row) {
-    var hrefId = $row.closest('.collapse').attr('id');
-    $row.find('td').each(function () {
+    var hrefId = $row.closest(".collapse").attr("id");
+    $row.find("td").each(function () {
       const $cell = $(this);
-      if ($cell.hasClass('actions')) return;
+      if ($cell.hasClass("actions")) return;
 
-      const columnName = $cell.data('column'); // Get the column name
-      checkListItemDTO.id = $row.data('id')
+      const columnName = $cell.data("column"); // Get the column name
+      checkListItemDTO.id = $row.data("id");
 
-
-      const $select = $cell.find('select');
+      const $select = $cell.find("select");
       if ($select.length) {
-        if (columnName === 'priorityLevel') {
+        if (columnName === "priorityLevel") {
           checkListItemDTO.priorityLevel = $select.val();
         }
         $cell.text($select.val());
       } else {
         // Otherwise, check for a text input
-        const $input = $cell.find('input');
+        const $input = $cell.find("input");
         if ($input.length) {
-          if (columnName === 'checklistItemName') {
+          if (columnName === "checklistItemName") {
             checkListItemDTO.checklistItemName = $input.val();
-          } else if (columnName === 'score') {
+          } else if (columnName === "score") {
             checkListItemDTO.value = $input.val();
           }
           $cell.text($input.val());
         }
       }
     });
-    $row.find('.edit').text('Edit');
-    console.log('Row updated successfully', checkListItemDTO);
-    let checklistData1 = []
-    checklistData1 = JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
+    $row.find(".edit").text("Edit");
+    console.log("Row updated successfully", checkListItemDTO);
+    let checklistData1 = [];
+    checklistData1 =
+      JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
 
-    let itemIndex1 = checklistData1.findIndex(item => item.id === hrefId);
-    var itemdata = checklistData1.find(item => item.id === hrefId);
+    let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
+    var itemdata = checklistData1.find((item) => item.id === hrefId);
 
-    let itemIndex2 = itemdata.checkListItemDTO.findIndex(item => item.id === checkListItemDTO.id);
+    let itemIndex2 = itemdata.checkListItemDTO.findIndex(
+      (item) => item.id === checkListItemDTO.id
+    );
 
     itemdata.checkListItemDTO[itemIndex2] = checkListItemDTO;
-    checklistData1[itemIndex1] = itemdata
+    checklistData1[itemIndex1] = itemdata;
 
     localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
   }
-
-
 
   function addNewItem() {
-
-    console.log('fetch newly add data', checkListItemDTO);
-    let checklistitems = []
+    console.log("fetch newly add data", checkListItemDTO);
+    let checklistitems = [];
     checklistitems = JSON.parse(localStorage.getItem("checklistData")) || [];
 
-    console.log('find need raw id need  to add new item ');
-    var hrefId = rawId
+    console.log("find need raw id need  to add new item ");
+    var hrefId = rawId;
 
-    console.log('fetch all checklist');
-    let checklistData1 = []
-    checklistData1 = JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
+    console.log("fetch all checklist");
+    let checklistData1 = [];
+    checklistData1 =
+      JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
 
-    console.log('find  of index check list from all list  to update ');
-    let itemIndex1 = checklistData1.findIndex(item => item.id === hrefId);
-    console.log('find checklsit  using id');
-    var itemdata = checklistData1.find(item => item.id === hrefId);
+    console.log("find  of index check list from all list  to update ");
+    let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
+    console.log("find checklsit  using id");
+    var itemdata = checklistData1.find((item) => item.id === hrefId);
 
-    console.log('push new data to checklist');
+    console.log("push new data to checklist");
     $.each(checklistitems[0].checkListItemDTO, function (index, value) {
-      itemdata.checkListItemDTO.push(value)
+      itemdata.checkListItemDTO.push(value);
     });
 
-    console.log('save index position');
-    checklistData1[itemIndex1] = itemdata
+    console.log("save index position");
+    checklistData1[itemIndex1] = itemdata;
 
-    console.log('save alldata');
+    console.log("save alldata");
     localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
     localStorage.removeItem("checklistData");
-    $('#exampleModal').modal('hide');
+    $("#exampleModal").modal("hide");
     $("#tbodyCheckListitemCodel").html("");
   }
-
-
-
-
-
-
-
-
-
 
   function saveRow2($row) {
     var hrefId;
     var checklistNamenew;
-    $row.find('td').each(function () {
+    $row.find("td").each(function () {
       const $cell = $(this);
-      if ($cell.hasClass('actions')) return;
+      if ($cell.hasClass("actions")) return;
 
-      const columnName = $cell.data('column'); // Get the column name
-      hrefId = $row.data('id')
+      const columnName = $cell.data("column"); // Get the column name
+      hrefId = $row.data("id");
 
       const collapseButton = $cell.find('[data-bs-toggle="collapse"]').detach();
-      const $input = $cell.find('input');
+      const $input = $cell.find("input");
       const newText = $input.val();
       checklistNamenew = newText;
-      $cell.empty().append(collapseButton).append(document.createTextNode(newText));
+      $cell
+        .empty()
+        .append(collapseButton)
+        .append(document.createTextNode(newText));
     });
-    $row.find('.edit').text('Edit');
+    $row.find(".edit").text("Edit");
 
-    let checklistData1 = []
-    checklistData1 = JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
+    let checklistData1 = [];
+    checklistData1 =
+      JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
 
-    let itemIndex1 = checklistData1.findIndex(item => item.id === hrefId);
-    var itemdata = checklistData1.find(item => item.id === hrefId);
-    itemdata.checklistName = checklistNamenew
-    checklistData1[itemIndex1] = itemdata
+    let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
+    var itemdata = checklistData1.find((item) => item.id === hrefId);
+    itemdata.checklistName = checklistNamenew;
+    checklistData1[itemIndex1] = itemdata;
     localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
   }
 
+  function deleteRow2(id) {
+    var hrefId = id;
+    let checklistData1 = [];
+    checklistData1 =
+      JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
 
+    let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
+    if (itemIndex1 !== -1) {
+      checklistData1.splice(itemIndex1, 1);
 
-
-
-
-
-
-
-
-
-
-
-
+      // Update the local storage with the modified array
+      localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
+    }
+  }
 
   function getToken(data) {
     loginModel.login = data.login;
@@ -681,17 +636,13 @@ if (!this.Registraion) {
         });
         sample();
       },
-      error: function (xhr, error) { },
+      error: function (xhr, error) {},
     });
   }
-
-
 
   const delay = (delayInms) => {
     return new Promise((resolve) => setTimeout(resolve, delayInms));
   };
-
-
 
   const sample = async () => {
     let delayres = await delay(3000);
@@ -703,14 +654,10 @@ if (!this.Registraion) {
   //   window.location = formContextPath;
   // }
 
-
-
   function onDeleteSuccess(result) {
     // reloading page to see the updated data
     window.location = formContextPath;
   }
-
-
 
   // Registraion.showModalPopup = function (el, id, action, obj) {
   //   resetForm();
@@ -746,12 +693,10 @@ if (!this.Registraion) {
   //   formModel.pid = null; // reset form model;
   // }
 
-
   function addErrorAlert(message, key, data) {
     $(".alert > p").html(message);
     $(".alert").show();
   }
-
 
   function onError(httpResponse, exception) {
     var i;
