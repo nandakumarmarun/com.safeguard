@@ -103,6 +103,8 @@ if (!this.Registraion) {
       rawId = dataId;
     });
 
+
+
     $("#checklistTable").on("click", ".delete1", function (event) {
       // Access the clicked button's parent table row
       var clickedRow = $(this).closest("tr");
@@ -111,6 +113,25 @@ if (!this.Registraion) {
       deleteRow2(dataId);
       loadTable();
     });
+
+
+
+    $("#checklistTable").on("click", ".delete", function (event) {
+      // Access the clicked button's parent table row
+      var $clickedRow = $(this).closest("tr");
+      // Extract the data-id from the table row
+      deleteRow1($clickedRow);
+    });
+
+
+    // $("#").on("click", ".delete1", function (event) {
+    //   // Access the clicked button's parent table row
+    //   var clickedRow = $(this).closest("tr");
+    //   // Extract the data-id from the table row
+    //   var dataId = clickedRow.data("id");
+    //   deleteRow2(dataId);
+    //   loadTable();
+    // });
 
     // $('#tbodyCheckListitemCodel').on('click', '.edit', function () {
     //   const $row = $(this).closest('tr');
@@ -148,6 +169,11 @@ if (!this.Registraion) {
     });
     loadTable();
   });
+
+
+
+
+
 
   function loadTable() {
     $("#checklistTable").html(" ");
@@ -187,7 +213,7 @@ if (!this.Registraion) {
         '<th class="col-3">Question</th>' +
         '<th class="col-3">Value</th>' +
         '<th class="col-3">Priority</th>' +
-        '<th class="col-3 cd-center">Actions</th></tr></thead><tbody>';
+        '<th class="col-3 cd-center">Actions</th></tr></thead><tbody id ="cotbody">';
 
       div += innerrows;
 
@@ -213,6 +239,15 @@ if (!this.Registraion) {
 
     $("#checklistTable").append(div);
   }
+
+
+
+
+
+
+
+
+
 
   function loadToLocalStorge() {
     let newdata = [];
@@ -255,6 +290,7 @@ if (!this.Registraion) {
     }
   }
 
+
   function loadModelToLocalStorge() {
     let newdata = [];
 
@@ -295,7 +331,6 @@ if (!this.Registraion) {
       console.log("Registration Model Data: ", checklistData1);
     }
   }
-
   // Print the UUID
   function uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -307,6 +342,13 @@ if (!this.Registraion) {
       }
     );
   }
+
+
+
+
+
+
+
 
   function savechecklist() {
     let newdata = [];
@@ -340,6 +382,13 @@ if (!this.Registraion) {
     $("#checklistN").val("");
   }
 
+
+
+
+
+
+
+
   function innerTableLload() {
     let checklistData1 =
       JSON.parse(localStorage.getItem("checklistData")) || [];
@@ -365,16 +414,15 @@ if (!this.Registraion) {
         "</td></tr>";
     });
 
-    {
-      /* <button class="btn btn-warning m-2 edit">Edit</button> */
-    }
-
     tbody += checklistContent2;
     $("#checklistcollapse").append(tbody);
     $("#checklistitemName").val("");
     $("#value").val("");
     $("#priority").val($("#priority option:first").val());
   }
+
+
+
 
   function innerTablemodelload() {
     let checklistData1 =
@@ -410,20 +458,38 @@ if (!this.Registraion) {
     $("#priorityModel").val($("#priority option:first").val());
   }
 
-  // function switchToEditMode(row) {
-  //   row.find('td').each(function () {
-  //     const $cell = $(this);
-  //     if ($cell.hasClass('actions')) return;
 
-  //     const currentText = $cell.text();
-  //     const $input = $('<input>', {
-  //       type: 'text',
-  //       value: currentText
-  //     });
-  //     $cell.html($input);
-  //   });
-  //   row.find('.edit').text('Save');
-  // }
+
+
+
+
+
+  function loadCollpase(checkListItemDTO, checklistContent2) {
+    $.each(checkListItemDTO, function (itemIndex, item) {
+      checklistContent2 +=
+        '<tr data-id="' +
+        item.id +
+        '"><td class="col-3" data-column="checklistItemName">' +
+        item.checklistItemName +
+        '</td><td class="col-3" data-column="score">' +
+        item.value +
+        '</td><td class="col-3 dropdown-column" data-column="priorityLevel">' +
+        item.priorityLevel +
+        "</td>" +
+        '<td class="col-3 actions"><div class="cd-center actions"><button class="btn btn-primary m-2 edit">Edit</button>' +
+        '<button class="btn btn-danger m-2 delete actions">Delete</button></div>' +
+        "</td></tr>";
+    });
+    return checklistContent2;
+  }
+
+
+
+
+
+
+
+
 
   function switchToEditMode(row) {
     row.find("td").each(function () {
@@ -465,6 +531,10 @@ if (!this.Registraion) {
     row.find(".edit").text("Save");
   }
 
+
+
+
+
   function switchToEditMode2(row) {
     row.find("td").each(function () {
       const $cell = $(this);
@@ -480,6 +550,10 @@ if (!this.Registraion) {
     });
     row.find(".edit").text('<i class="fa-solid fa-check"></i>');
   }
+
+
+
+
 
   function saveRow($row) {
     var hrefId = $row.closest(".collapse").attr("id");
@@ -528,6 +602,10 @@ if (!this.Registraion) {
     localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
   }
 
+
+
+
+
   function addNewItem() {
     console.log("fetch newly add data", checkListItemDTO);
     let checklistitems = [];
@@ -561,6 +639,9 @@ if (!this.Registraion) {
     $("#tbodyCheckListitemCodel").html("");
   }
 
+
+
+
   function saveRow2($row) {
     var hrefId;
     var checklistNamenew;
@@ -593,6 +674,15 @@ if (!this.Registraion) {
     localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
   }
 
+
+
+
+
+
+
+
+
+
   function deleteRow2(id) {
     var hrefId = id;
     let checklistData1 = [];
@@ -607,6 +697,49 @@ if (!this.Registraion) {
       localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
     }
   }
+
+
+
+
+
+  function deleteRow1($clickedRow) {
+    var hrefId = $clickedRow.closest(".collapse").attr("id");;
+    let checklistData1 = [];
+    checklistData1 =
+      JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
+
+    let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
+    var itemdata = checklistData1.find((item) => item.id === hrefId);
+
+    $clickedRow.find("td").each(function () {
+      checkListItemDTO.id = $clickedRow.data("id");
+    });
+
+    console.log("item.Id", checkListItemDTO.id)
+
+
+    if (itemIndex1 !== -1) {
+      let itemIndex2 = itemdata.checkListItemDTO.findIndex((item) => item.id === checkListItemDTO.id);
+      itemdata.checkListItemDTO.splice(itemIndex2, 1);
+      checklistData1[itemIndex1] = itemdata;
+      localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
+
+      $("#cotbody").html(" ");
+      var tbody = "";
+      var checklistContent2 = " ";
+      checklistContent2 = loadCollpase(itemdata.checkListItemDTO, checklistContent2);
+      tbody += checklistContent2;
+      $("#cotbody").append(tbody);
+    }
+  }
+
+
+
+
+
+
+
+
 
   function getToken(data) {
     loginModel.login = data.login;
@@ -636,18 +769,28 @@ if (!this.Registraion) {
         });
         sample();
       },
-      error: function (xhr, error) {},
+      error: function (xhr, error) { },
     });
   }
+
+
+
+
 
   const delay = (delayInms) => {
     return new Promise((resolve) => setTimeout(resolve, delayInms));
   };
 
+
+
+
   const sample = async () => {
     let delayres = await delay(3000);
     location.href = "http://localhost:80/HTML/new";
   };
+
+
+
 
   // function onSaveSuccess(result) {
   //   // reloading page to see the updated data
