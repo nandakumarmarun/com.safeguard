@@ -1,21 +1,9 @@
-body{
-    overflow: hidden;
-    height: 100vh;
-    background-image:
-                linear-gradient(45deg,
-                    rgba(4, 8, 68, 0.75),
-                    rgba(8, 83, 156, 0.75)), 
-                      url('../bg/J4o.gif');
-    /* background-image: url('../bg/bg2.jpg'); */
-    background-size: cover; /* Cover the entire div */
-    background-repeat: no-repeat; /*Do not repeat the image*/
-    background-position: center; /* Center the image */
-}
+body {}
 
-.create-text{
+.create-text {
     display: flex;
     align-items: center;
-    justify-content: center;   
+    justify-content: center;
 }
 
 .banner-container {
@@ -26,17 +14,21 @@ body{
     height: 90vh;
     background-image: url('../bg/bg2.gif');
     background-size: cover; /* Cover the entire div */
-    /* background-repeat: no-repeat; Do not repeat the image */
-    /* background-position: center; /* Center the image */
-    /* overflow: hidden; */
+/* background-repeat: no-repeat; Do not repeat the image */
+/* background-position: center; /* Center the image */
+/* overflow: hidden; */
 /* }  */
 
 .banner-right {
     height: 80vh;
     /* background-color: rgb(51, 49, 49); */
-    background-size: cover; /* Cover the entire div */
-    background-repeat: no-repeat; /* Do not repeat the image */
-    background-position: center; /* Center the image */;
+    background-size: cover;
+    /* Cover the entire div */
+    background-repeat: no-repeat;
+    /* Do not repeat the image */
+    background-position: center;
+    /* Center the image */
+    ;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -54,9 +46,12 @@ body{
 .form-container-inner-1 {
     height: 600px;
     background-image: url('../bg/bg2.gif');
-    background-size: cover; /* Cover the entire div */
-    background-repeat: no-repeat; /*Do not repeat the image*/
-    background-position: center; /* Center the image */
+    background-size: cover;
+    /* Cover the entire div */
+    background-repeat: no-repeat;
+    /*Do not repeat the image*/
+    background-position: center;
+    /* Center the image */
 }
 
 .form-container-inner-2 {
@@ -65,15 +60,15 @@ body{
 }
 
 
-.form-container-inner-box{
+.form-container-inner-box {
     width: 500px;
 }
 
-.title h3{
-color: white;
+.title h3 {
+    color: white;
 }
 
-.form-container-inner-box a{
+.form-container-inner-box a {
     color: white;
 }
 

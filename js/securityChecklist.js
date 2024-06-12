@@ -59,17 +59,10 @@ if (!this.Registraion) {
   };
 
   $(document).ready(function () {
-    // add the rule here
-    // $.validator.addMethod(
-    //   "valueNotEquals",
-    //   function (value, element, arg) {
-    //     return arg != value;
-    //   },
-    //   ""
-    // );
 
+    loadQuetions();
 
-    var currentStep = 1;
+    var currentStep = 0;
     var totalSteps = $(".step").length;
 
     $(".next-step").click(function () {
@@ -80,7 +73,7 @@ if (!this.Registraion) {
     });
 
     $(".prev-step").click(function () {
-      if (currentStep > 1) {
+      if (currentStep > 0) {
         currentStep--;
         showStep(currentStep);
       }
@@ -89,7 +82,14 @@ if (!this.Registraion) {
     function showStep(step) {
       $(".step").removeClass("active");
       $(".step-" + step).addClass("active");
+      $(".sidebar-item").removeClass("active");
+      $(".sidebar-item.step-" + step).addClass("active");
     }
+
+
+
+
+
 
     $("#multiStepForm").submit(function (event) {
       event.preventDefault();
@@ -97,7 +97,7 @@ if (!this.Registraion) {
       // You can add your form submission logic here.
     });
 
-    loadQuetions();
+
 
     // createEditForm.validate({
     //   rules: validationRules,
@@ -120,38 +120,79 @@ if (!this.Registraion) {
     let checklist2 = [];
     checklist2 = JSON.parse(localStorage.getItem("ChecklistDataList"));
     var tabody = ""
+    var sideBarItems = ""
+
+
+    tabody += `<div class="step step-0 active">
+        <div class="div">
+            <form action="">
+                <label class="m-2">Company</label>
+                <select id="priority" class="form-select mt-2" id="inputGroupSelect01">
+                    <option value="HIGH" selected>HIGH</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="LOW">LOW</option>
+                </select>
+                <label class="m-2">SystemNo</label>
+                <input id="systemNo" type="text" class="form-control mt-2" placeholder="Enter System Number"
+                    aria-label="SystemNo" />
+                <label class="m-2">Project Name</label>
+                <input id="projectName" type="text" class="form-control mt-2" placeholder="Enter Project Name"
+                    aria-label="Project Name" />
+            </form>
+            <button type="button" class="btn btn-primary btn-1 m-3 next-step">Next</button>
+        </div>
+    </div>`;
+
+    sideBarItems += '<div class="sidebar-item m-3 text-center step-0 active'
+        + '">'
+        + '<h3>New Test</h3></div>'
+
     $.each(checklist2, function (index, value) {
       var activeClass = (index === 0) ? ' active' : '';
       tabody += '<div class="step step-'
         + (index + 1)
-        + activeClass
-        + '<h2>'
+        + '"><h2 class="m-4 fs-1 fw-bold">'
         + value.checklistName
         + '</h2>'
 
       var loadQu = "";
 
+      var activeClass = (index === 0) ? ' active' : '';
+
+      sideBarItems += '<div class="sidebar-item m-3 text-center step-'
+        + (index + 1)
+        + '">'
+        + '<h3>'
+        + value.checklistName
+        + '</h3></div>'
+
       $.each(value.checkListItemDTO, function (itemIndex, item) {
-        loadQu = '<div class="form-check">'
-          + '<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">'
+        loadQu += '<div class="form-check fs-3 m-3">'
+          + '<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked-'
+          + index
+          + '">'
           + '<label class="form-check-label" for="flexCheckChecked">'
           + item.checklistItemName
           + '</label></div>'
       });
       tabody += loadQu;
 
-      if (index < 0) {
-        tabody += '<button type="button" class="btn btn-secondary prev-step">Previous</button>'
-      }
+      var buttondiv = '<div class="row mt-5"><div class="col text-end p-3">'
+      tabody += buttondiv;
+
+      
+      tabody += '<button type="button" class="btn btn-secondary btn-1 m-3 prev-step">Previous</button>'
       if (index < checklist2.length - 1) {
-        tabody += '<button type = "button" class="btn btn-primary next-step" >Next</button>'
+        tabody += '<button type = "button" class="btn btn-primary btn-1 m-3 next-step" >Next</button>'
       } else {
-        tabody += '<button type="button" class="btn btn-secondary prev-step">Previous</button>'
-        tabody += '<button type="submit" class="btn btn-success">Submit</button>'
+        tabody += '<button type="submit" class="btn btn-success m-3 btn-1">Submit</button>'
       }
-      tabody += `</div>`;
+
+      tabody += `</div></div></div>`;
     });
+    console.log(tabody)
     $("#multiStepForm").append(tabody);
+    $("#sidebar-inner").append(sideBarItems);
   }
 
 
