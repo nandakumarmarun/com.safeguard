@@ -228,7 +228,12 @@ if (!this.Registraion) {
       title: data.testStatus,
       text: data.description,
       icon: "success"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        redirect();
+      }
     });
+  
   }
 
   function Moderate(data) {
@@ -237,17 +242,31 @@ if (!this.Registraion) {
       title: data.testStatus,
       text: data.description,
       icon: "info"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        redirect();
+      }
     });
   }
 
   function Critcal(data) {
     $("#LoadingModel").modal("hide");
-    Swal.fire({
+    const { value: done } = Swal.fire({
       title: data.testStatus,
       text: data.description,
       icon: "error"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        redirect();
+      }
     });
   }
+
+
+  const sample = async () => {
+
+    location.href = "http://localhost:80/HTML/new"
+  };
 
 
   function loadQuetions(data) {
@@ -264,7 +283,7 @@ if (!this.Registraion) {
             <div class="input-group">
             <select id="priority" class="form-select " id="inputGroupSelect01">
             </select>
-            <button class="btn btn-outline-secondary " id="addclit" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-plus"></i></button></div>
+            <button class="btn btn-success " id="addclit" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-plus"></i></button></div>
             <label class="m-2">SystemNo</label>
             <input id="systemNo" type="text" class="form-control" placeholder="Enter System Number" aria-label="SystemNo" />
             <label class="m-2">Project Name</label>
@@ -345,51 +364,15 @@ if (!this.Registraion) {
     $("#sidebar-inner").append(sideBarItems);
   }
 
-
-
-
-
-  function getToken(data) {
-    loginModel.login = data.login
-    loginModel.password = data.password
-    $.ajax({
-      method: 'POST',
-      url: "http://localhost:8081/api/v1/auth/authenticate",
-      contentType: "application/json; charset=utf-8",
-      data: JSON.stringify(loginModel),
-      success: function (data) {
-        localStorage.setItem('token', data.token);
-        // onSaveSuccess(data);
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Signed in successfully"
-        });
-        sample();
-      },
-      error: function (xhr, error) {
-      }
-    });
-  }
+  const redirect = async () => {
+    location.href = "http://localhost:80/HTML/new"
+  };
 
   const delay = (delayInms) => {
     return new Promise(resolve => setTimeout(resolve, delayInms));
   };
 
-  const sample = async () => {
-    let delayres = await delay(3000);
-    location.href = "http://localhost:80/HTML/new"
-  };
+  
 
   function intializeButtons() {
     var currentStep = 0;
