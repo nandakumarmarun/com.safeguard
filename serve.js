@@ -24,6 +24,7 @@ const mimeTypes = {
 
 const server = http.createServer((req, res) => {
     let requestedUrl = decodeURIComponent(req.url);
+    console.log(`Requested URL: ${requestedUrl}`);
     let filePath;
 
     if (requestedUrl === '/') {
