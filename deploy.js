@@ -24,12 +24,16 @@ const mimeTypes = {
 
 const server = https.createServer((req, res) => {
     let requestedUrl = decodeURIComponent(req.url);
+    console.log(`Requested URL: ${requestedUrl}`);
     let filePath;
 
     if (requestedUrl === '/') {
+        console.log(`Requested URL if : ${requestedUrl}`);
         filePath = path.join(__dirname, 'HTML', 'landing.html');
+        console.log(`Requested URL if : ${filePath}`);
     } else {
-        filePath = path.join(__dirname, requestedUrl);
+        console.log(`Requested URL else: ${requestedUrl}`);
+        filePath = path.join(__dirname, filePath);
     }
 
     // Append '.html' if there's no extension in the requested URL
