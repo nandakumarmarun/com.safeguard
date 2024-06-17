@@ -1,4 +1,4 @@
-const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
@@ -22,7 +22,7 @@ const mimeTypes = {
     '.svg': 'application/image/svg+xml'
 };
 
-const server = http.createServer((req, res) => {
+const server = https.createServer((req, res) => {
     let requestedUrl = decodeURIComponent(req.url);
     let filePath;
 
