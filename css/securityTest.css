@@ -58,9 +58,25 @@ body {
 
 
 .sidebar-item.active {
-    background: #007bff;
+    background: #03c24c;
     border-radius: 5px;
-    color: black;
+    color: rgb(245, 245, 249);
     padding: 5px;
     font-size: 20px;
+}
+
+
+.highpriority{
+    color: red;
+    font-weight: 700;
+}
+
+.moderatepriority{
+    color: rgb(19, 195, 230);
+    font-weight: 700;
+}
+
+.lowpriority{
+    color: rgb(6, 119, 46);
+    font-weight: 700;
 }

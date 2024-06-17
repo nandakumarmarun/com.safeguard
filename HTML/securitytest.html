@@ -40,7 +40,6 @@
         <div class="c-1">
             <div class="row r-1">
                 <div class="sidebar col-3" id="sidebar">
-                    <h3 class="text-center mb-5">CheckList</h3>
                     <div id="sidebar-inner" class="m-1">
                     </div>
                 </div>
@@ -65,16 +64,32 @@
                         <input id="checklistitemNameModel" type="text" class="form-control mt-2"
                             placeholder="Enter Question" aria-label="Username" />
                         <label class="m-2">Address</label>
-                        <input id="valueModel" type="text" class="form-control mt-2" placeholder="Enter Address"
+                        <input id="address" type="text" class="form-control mt-2" placeholder="Enter Address"
                             aria-label="Server" />
                         <label class="m-2">Phone</label>
-                        <input id="valueModel" type="phone" class="form-control mt-2" placeholder="Enter Phone No"
+                        <input id="Phone" type="phone" class="form-control mt-2" placeholder="Enter Phone No"
                             aria-label="Server" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="addBtnNewitem">save item</button>
+                    <button type="submit" class="btn btn-success" id="BtnAddCompany">save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="LoadingModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,6 +101,7 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>

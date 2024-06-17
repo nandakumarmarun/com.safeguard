@@ -7,24 +7,39 @@ if (!this.Registraion) {
 (function () {
   "use strict";
 
-  var formContextPath =
-    location.protocol + "//" + location.host + location.pathname;
+  var ContextPath =
+    location.protocol + "//" + location.host;
 
   var createEditForm = $("#regForm");
   var deleteForm = $("#deleteForm");
 
-  var checkListItemDTO = {
-    id: null,
-    checklistItemName: null,
-    value: null,
-    priorityLevel: null,
+  const SecurityTestCreateDTO = {
+    applicationName: null,
+    systemNo: null,
+    department: null,
+    testStatus: null,
+    testScore: null,
+    securityLevel: null,
+    testCheckLists: [],
+    userId: null,
+    companyId: null
   };
 
-  var checklist = {
-    id: null,
-    checklistName: null,
-    checkListItemDTO: [],
-  };
+  var testCheckLists = {
+    marked: false,
+    testCheckListItems: []
+  }
+
+  var testCheckListItems = {
+    marked: false,
+    checklistitemId: null
+  }
+
+  var CompanyCreateDTO = {
+    companyName: null,
+    address: null,
+    contact: null
+  }
 
   // Specify the validation rules
   var validationRules = {
@@ -60,65 +75,184 @@ if (!this.Registraion) {
 
   $(document).ready(function () {
 
-    loadQuetions();
-
-    var currentStep = 0;
-    var totalSteps = $(".step").length;
-
-    $(".next-step").click(function () {
-      if (currentStep < totalSteps) {
-        currentStep++;
-        showStep(currentStep);
-      }
-    });
-
-    $(".prev-step").click(function () {
-      if (currentStep > 0) {
-        currentStep--;
-        showStep(currentStep);
-      }
-    });
-
-    function showStep(step) {
-      $(".step").removeClass("active");
-      $(".step-" + step).addClass("active");
-      $(".sidebar-item").removeClass("active");
-      $(".sidebar-item.step-" + step).addClass("active");
-    }
-
-
-
+    getAllDataFromServer();
 
 
 
     $("#multiStepForm").submit(function (event) {
       event.preventDefault();
-      alert("Form submitted!");
-      // You can add your form submission logic here.
+      $("#LoadingModel").modal("show");
+      SUbmitTest();
     });
-
-
-
-    // createEditForm.validate({
-    //   rules: validationRules,
-    //   messages: validationMessages,
-    //   submitHandler: function (form) {
-    //     createUpdateForm();
-    //   },
-    // });
-
-    // deleteForm.submit(function (e) {
-    //   // prevent Default functionality
-    //   e.preventDefault();
-    //   // pass the action-url of the form
-    //   deleteForm1(e.currentTarget.action);
-    // });
   });
 
 
-  function loadQuetions() {
+  function getAllDataFromServer() {
+    $.ajax({
+      method: "GET",
+      url: ContextPath + ":8081" + "/api/check-lists",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      success: function (data) {
+        loadQuetions(data);
+        intializeButtons();
+        loadCompanies();
+      },
+      error: function (xhr, error) {
+      },
+    });
+  }
+
+  function getAllDataFromServer() {
+    $.ajax({
+      method: "GET",
+      url: ContextPath + ":8081" + "/api/check-lists",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      success: function (data) {
+        loadQuetions(data);
+        intializeButtons();
+        loadCompanies();
+      },
+      error: function (xhr, error) {
+      },
+    });
+  }
+
+
+  function loadCompanies() {
+    $('#priority').html('');
+    $.ajax({
+      method: "GET",
+      url: ContextPath + ":8081" + "/api/companies",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      success: function (data) {
+        data.forEach(element => {
+          $('#priority').append('<option value="' + element.id + '">' + element.companyName + '</option>');
+        });
+      },
+      error: function (xhr, error) {
+      },
+    });
+  }
+
+
+  function CreateCompanies() {
+    CompanyCreateDTO.companyName = $("#checklistitemNameModel").val();
+    CompanyCreateDTO.address = $("#systemNo").val();
+    CompanyCreateDTO.contact = $("#projectName").val();
+    $.ajax({
+      method: "POST",
+      url: ContextPath + ":8081" + "/api/companies",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(CompanyCreateDTO),
+      success: function (data) {
+        loadCompanies();
+        $("#exampleModal").modal("hide");
+      },
+      error: function (xhr, error) {
+      },
+    });
+  }
+
+
+  function SUbmitTest() {
+    SecurityTestCreateDTO.applicationName = $('#projectName').val();
+    SecurityTestCreateDTO.systemNo = parseInt($('#systemNo').val());
+    SecurityTestCreateDTO.companyId = parseInt($('#priority').val());
+
+    const checkLists = {};
+
+    $('.form-check-input').each(function () {
+      const checkListId = $(this).data('checklistid');
+      const checkListItemId = $(this).data('checklistitemid');
+      const isChecked = $(this).is(':checked');
+
+      if (!checkLists[checkListId]) {
+        checkLists[checkListId] = [];
+      }
+
+      checkLists[checkListId].push({
+        marked: isChecked,
+        checklistitemId: checkListItemId
+      });
+    });
+
+    const testCheckLists = Object.keys(checkLists).map(checkListId => ({
+      checkListId: parseInt(checkListId),
+      testCheckListItems: checkLists[checkListId]
+    }));
+
+    SecurityTestCreateDTO.testCheckLists = testCheckLists;
+
+    console.log(SecurityTestCreateDTO)
+
+
+    $.ajax({
+      method: "POST",
+      url: ContextPath + ":8081" + "/api/security-tests",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(SecurityTestCreateDTO),
+      success: function (data) {
+        console.log(data)
+        if(data.testStatus == "EXCELLENT"){
+          Excellent(data);
+        }else if(data.testStatus == "MODERATE"){
+          Moderate(data)
+        }else{
+          Critcal(data)
+        }
+      },
+      error: function (xhr, error) {
+      },
+    });
+  }
+
+
+  function Excellent(data) {
+    $("#LoadingModel").modal("hide");
+    Swal.fire({
+      title: data.testStatus,
+      text: data.description,
+      icon: "success"
+    });
+  }
+
+  function Moderate(data) {
+    $("#LoadingModel").modal("hide");
+    Swal.fire({
+      title: data.testStatus,
+      text: data.description,
+      icon: "info"
+    });
+  }
+
+  function Critcal(data) {
+    $("#LoadingModel").modal("hide");
+    Swal.fire({
+      title: data.testStatus,
+      text: data.description,
+      icon: "error"
+    });
+  }
+
+
+  function loadQuetions(data) {
     let checklist2 = [];
-    checklist2 = JSON.parse(localStorage.getItem("ChecklistDataList"));
+    checklist2 = data
     var tabody = ""
     var sideBarItems = ""
 
@@ -127,29 +261,28 @@ if (!this.Registraion) {
         <div class="div">
             <form action="">
             <label class="m-2">Company</label>
-            <div class="input-group mb-3">
-            <select id="priority" class="form-select mt-2" id="inputGroupSelect01">
-                    <option value="HIGH" selected>HIGH</option>
+            <div class="input-group">
+            <select id="priority" class="form-select " id="inputGroupSelect01">
             </select>
-            <button class="btn btn-outline-secondary mt-2" id="addclit" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-plus"></i></button></div>
+            <button class="btn btn-outline-secondary " id="addclit" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-plus"></i></button></div>
             <label class="m-2">SystemNo</label>
-            <input id="systemNo" type="text" class="form-control mt-2" placeholder="Enter System Number" aria-label="SystemNo" />
+            <input id="systemNo" type="text" class="form-control" placeholder="Enter System Number" aria-label="SystemNo" />
             <label class="m-2">Project Name</label>
-            <input id="projectName" type="text" class="form-control mt-2" placeholder="Enter Project Name" aria-label="Project Name" />
+            <input id="projectName" type="text" class="form-control " placeholder="Enter Project Name" aria-label="Project Name" />
             </form>
             <div class="row mt-5"><div class="col text-end p-3">
-            <button type="button" class="btn btn-primary btn-1 m-3 next-step">Next</button></div></div>
+            <button type="button" class="btn btn-success btn-1 m-3 next-step">Next</button></div></div>
         </div></div>`;
 
     sideBarItems += '<div class="sidebar-item m-3 text-center step-0 active'
       + '">'
-      + '<h3>New Test</h3></div>'
+      + '<h5>Project</h5></div>'
 
     $.each(checklist2, function (index, value) {
       var activeClass = (index === 0) ? ' active' : '';
       tabody += '<div class="step step-'
         + (index + 1)
-        + '"><h2 class="m-4 fs-1 fw-bold">'
+        + '"><h2 class="m-4 fs-3 fw-bold">'
         + value.checklistName
         + '</h2>'
 
@@ -160,16 +293,36 @@ if (!this.Registraion) {
       sideBarItems += '<div class="sidebar-item m-3 text-center step-'
         + (index + 1)
         + '">'
-        + '<h3>'
+        + '<h5>'
         + value.checklistName
-        + '</h3></div>'
+        + '</h5></div>'
 
       $.each(value.checkListItemDTO, function (itemIndex, item) {
-        loadQu += '<div class="form-check fs-3 m-3">'
-          + '<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked-'
-          + index
+        var prioritylevel = ''
+        if (item.priorityLevel === "HIGH") {
+          prioritylevel = 'highpriority'
+        } else if (item.priorityLevel === "LOW") {
+          prioritylevel = 'lowpriority'
+        } else {
+          prioritylevel = 'moderatepriority'
+        }
+
+
+        loadQu += '<div class="form-check fs-6 m-3">'
+          + '<input class="form-check-input" type="checkbox" value="'
+          + item.id
+          + '" id="flexCheckChecked-'
+          + item.id
+          + '" data-checklistitemId="'
+          + item.id
+          + '" data-checklistId="'
+          + value.id
           + '">'
-          + '<label class="form-check-label" for="flexCheckChecked">'
+          + '<label class="form-check-label '
+          + prioritylevel
+          + '" for="flexCheckChecked-'
+          + item.id
+          + '">'
           + item.checklistItemName
           + '</label></div>'
       });
@@ -181,14 +334,13 @@ if (!this.Registraion) {
 
       tabody += '<button type="button" class="btn btn-secondary btn-1 m-3 prev-step">Previous</button>'
       if (index < checklist2.length - 1) {
-        tabody += '<button type = "button" class="btn btn-primary btn-1 m-3 next-step" >Next</button>'
+        tabody += '<button type = "button" class="btn btn-success btn-1 m-3 next-step" >Next</button>'
       } else {
-        tabody += '<button type="submit" class="btn btn-success m-3 btn-1">Submit</button>'
+        tabody += '<button type="submit" data-bs-target="#LoadingModel" class="btn btn-success m-3 btn-1">Submit</button>'
       }
 
       tabody += `</div></div></div>`;
     });
-    console.log(tabody)
     $("#multiStepForm").append(tabody);
     $("#sidebar-inner").append(sideBarItems);
   }
@@ -238,6 +390,37 @@ if (!this.Registraion) {
     let delayres = await delay(3000);
     location.href = "http://localhost:80/HTML/new"
   };
+
+  function intializeButtons() {
+    var currentStep = 0;
+    var totalSteps = $(".step").length;
+
+    $("#BtnAddCompany").on("click", function () {
+      console.log("Button clicked");
+      CreateCompanies()
+    });
+
+    $(".next-step").click(function () {
+      if (currentStep < totalSteps) {
+        currentStep++;
+        showStep(currentStep);
+      }
+    });
+
+    $(".prev-step").click(function () {
+      if (currentStep > 0) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    });
+
+    function showStep(step) {
+      $(".step").removeClass("active");
+      $(".step-" + step).addClass("active");
+      $(".sidebar-item").removeClass("active");
+      $(".sidebar-item.step-" + step).addClass("active");
+    }
+  }
 
   // function onSaveSuccess(result) {
   //   // reloading page to see the updated data
@@ -327,3 +510,5 @@ if (!this.Registraion) {
     }
   }
 })();
+
+

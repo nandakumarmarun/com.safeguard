@@ -7,8 +7,8 @@ if (!this.Registraion) {
 (function () {
   "use strict";
 
-  var formContextPath =
-    location.protocol + "//" + location.host + location.pathname;
+  var ContextPath =
+    location.protocol + "//" + location.host;
 
   // var createEditForm = $("#regForm");
   // var deleteForm = $("#deleteForm");
@@ -24,6 +24,30 @@ if (!this.Registraion) {
     id: null,
     checklistName: null,
     checkListItemDTO: [],
+  };
+
+  var checklistCreateDTO = {
+    checklistName: null,
+    checkListItemDTO: [],
+  };
+
+  var checklistUpdateDTO = {
+    checklistName: null,
+  };
+
+  var CheckListItemCreateDTO = {
+    checklistItemName: null,
+    value: null,
+    priorityLevel: null,
+    checkListId: null,
+  };
+
+  var checkListItemUpdateDTO = {
+    id: null,
+    checklistItemName: null,
+    value: null,
+    priorityLevel: null,
+    checkListId: null,
   };
 
   var rawId;
@@ -71,7 +95,8 @@ if (!this.Registraion) {
         // Optionally change the icon to a save icon here
         $icon.removeClass("fa-pen-to-square").addClass("fa-save");
       } else {
-        saveRow2($row);
+        // saveRow2($row);
+        saveNewCheckList($row);
         // Optionally change the icon back to edit icon here
         $icon.removeClass("fa-save").addClass("fa-pen-to-square");
       }
@@ -82,18 +107,22 @@ if (!this.Registraion) {
       if ($(this).text() === "Edit") {
         switchToEditMode($row);
       } else {
-        saveRow($row);
+        UpdateCheklistItem($row)
+        // saveRow($row);
       }
     });
+
 
     $("#checklistcollapse").on("click", ".edit", function () {
       const $row = $(this).closest("tr");
       if ($(this).text() === "Edit") {
         switchToEditMode($row);
       } else {
-        saveRow($row);
+        UpdateCheklistItem($row);
       }
     });
+
+
 
     $("#checklistTable").on("click", ".add", function (event) {
       // Access the clicked button's parent table row
@@ -124,24 +153,6 @@ if (!this.Registraion) {
     });
 
 
-    // $("#").on("click", ".delete1", function (event) {
-    //   // Access the clicked button's parent table row
-    //   var clickedRow = $(this).closest("tr");
-    //   // Extract the data-id from the table row
-    //   var dataId = clickedRow.data("id");
-    //   deleteRow2(dataId);
-    //   loadTable();
-    // });
-
-    // $('#tbodyCheckListitemCodel').on('click', '.edit', function () {
-    //   const $row = $(this).closest('tr');
-    //   if ($(this).text() === 'Edit') {
-    //     switchToEditMode($row);
-    //   } else {
-    //     saveRow($row);
-    //   }
-    // });
-
     // offcanvas add
     $("#addclit").on("click", function () {
       console.log("Button clicked");
@@ -159,7 +170,7 @@ if (!this.Registraion) {
     $("#btnsvecheck").on("click", function () {
       console.log("Button clicked");
       savechecklist();
-      loadTable();
+      getAllDataFromServer();
     });
 
     $("#addBtnNewitem").on("click", function () {
@@ -167,8 +178,31 @@ if (!this.Registraion) {
       addNewItem();
       loadTable();
     });
-    loadTable();
+    // loadTable();
+    getAllDataFromServer();
   });
+
+
+
+
+
+  function getAllDataFromServer() {
+    $.ajax({
+      method: "GET",
+      url: ContextPath + ":8081" + "/api/check-lists",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      success: function (data) {
+        getAlldata(data);
+      },
+      error: function (xhr, error) {
+      },
+    });
+  }
+
+
 
 
 
@@ -239,14 +273,6 @@ if (!this.Registraion) {
 
     $("#checklistTable").append(div);
   }
-
-
-
-
-
-
-
-
 
 
   function loadToLocalStorge() {
@@ -331,6 +357,8 @@ if (!this.Registraion) {
       console.log("Registration Model Data: ", checklistData1);
     }
   }
+
+
   // Print the UUID
   function uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -344,13 +372,10 @@ if (!this.Registraion) {
   }
 
 
-
-
-
-
-
-
+  // SAVE NEW CHECKLSIT 
   function savechecklist() {
+    console.log("url : " + ContextPath)
+
     let newdata = [];
     let ChecklistDataList = [];
     ChecklistDataList =
@@ -375,18 +400,35 @@ if (!this.Registraion) {
     if (offcanvas) {
       offcanvas.hide();
     }
+
+    checklistCreateDTO.checklistName = checklistData1[0].checklistName
+    checklistCreateDTO.checkListItemDTO = checklistData1[0].checkListItemDTO
+
+    $.ajax({
+      method: "POST",
+      url: ContextPath + ":8081" + "/api/check-lists/create",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(checklistCreateDTO),
+      success: function (data) {
+        console.log(data)
+      },
+      error: function (xhr, error) {
+        // onError(xhr, error);
+        Swal.fire({
+          title: xhr.responseText
+        });
+      },
+    });
+
     $("#checklistcollapse").html("");
     $("#checklistitemName").val("");
     $("#value").val("");
     $("#priority").val($("#priority option:first").val());
     $("#checklistN").val("");
   }
-
-
-
-
-
-
 
 
   function innerTableLload() {
@@ -420,8 +462,6 @@ if (!this.Registraion) {
     $("#value").val("");
     $("#priority").val($("#priority option:first").val());
   }
-
-
 
 
   function innerTablemodelload() {
@@ -461,9 +501,6 @@ if (!this.Registraion) {
 
 
 
-
-
-
   function loadCollpase(checkListItemDTO, checklistContent2) {
     $.each(checkListItemDTO, function (itemIndex, item) {
       checklistContent2 +=
@@ -486,11 +523,6 @@ if (!this.Registraion) {
 
 
 
-
-
-
-
-
   function switchToEditMode(row) {
     row.find("td").each(function () {
       const $cell = $(this);
@@ -501,7 +533,7 @@ if (!this.Registraion) {
         // Define options for the dropdown
         const options = [
           { value: "HIGH", text: "HIGH" },
-          { value: "MEADIUM", text: "MEADIUM" },
+          { value: "MODERATE", text: "MODERATE" },
           { value: "LOW", text: "LOW" },
         ];
 
@@ -554,14 +586,15 @@ if (!this.Registraion) {
 
 
 
-
-  function saveRow($row) {
+  // Update Checklist Items 
+  function UpdateCheklistItem($row) {
     var hrefId = $row.closest(".collapse").attr("id");
     $row.find("td").each(function () {
       const $cell = $(this);
       if ($cell.hasClass("actions")) return;
 
-      const columnName = $cell.data("column"); // Get the column name
+      const columnName = $cell.data("column"); 
+      // Get the column name
       checkListItemDTO.id = $row.data("id");
 
       const $select = $cell.find("select");
@@ -585,55 +618,67 @@ if (!this.Registraion) {
     });
     $row.find(".edit").text("Edit");
     console.log("Row updated successfully", checkListItemDTO);
-    let checklistData1 = [];
-    checklistData1 =
-      JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
-
-    let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
-    var itemdata = checklistData1.find((item) => item.id === hrefId);
-
-    let itemIndex2 = itemdata.checkListItemDTO.findIndex(
-      (item) => item.id === checkListItemDTO.id
-    );
-
-    itemdata.checkListItemDTO[itemIndex2] = checkListItemDTO;
-    checklistData1[itemIndex1] = itemdata;
-
-    localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
+    checkListItemUpdateDTO.checkListId = hrefId;
+    checkListItemUpdateDTO.id = checkListItemDTO.id
+    checkListItemUpdateDTO.checklistItemName = checkListItemDTO.checklistItemName
+    checkListItemUpdateDTO.priorityLevel = checkListItemDTO.priorityLevel
+    checkListItemUpdateDTO.value = checkListItemDTO.value
+    $.ajax({
+      method: "PUT",
+      url: ContextPath + ":8081" + "/api/check-list-items/" + checkListItemDTO.id,
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(checkListItemUpdateDTO),
+      success: function (data) {
+        getAllDataFromServer();
+      },
+      error: function (xhr, error) {
+        // onError(xhr, error);
+        // Swal.fire({
+        //   title: xhr.responseText
+        // });
+      },
+    });
   }
 
 
-
-
-
+  // method For save  add Item To Checklist
   function addNewItem() {
     console.log("fetch newly add data", checkListItemDTO);
     let checklistitems = [];
     checklistitems = JSON.parse(localStorage.getItem("checklistData")) || [];
-
     console.log("find need raw id need  to add new item ");
     var hrefId = rawId;
-
     console.log("fetch all checklist");
-    let checklistData1 = [];
-    checklistData1 =
-      JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
-
-    console.log("find  of index check list from all list  to update ");
-    let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
-    console.log("find checklsit  using id");
-    var itemdata = checklistData1.find((item) => item.id === hrefId);
-
     console.log("push new data to checklist");
     $.each(checklistitems[0].checkListItemDTO, function (index, value) {
-      itemdata.checkListItemDTO.push(value);
+      CheckListItemCreateDTO.checkListId = hrefId
+      CheckListItemCreateDTO.checklistItemName = value.checklistItemName
+      CheckListItemCreateDTO.value = value.value
+      CheckListItemCreateDTO.priorityLevel = value.priorityLevel
     });
 
-    console.log("save index position");
-    checklistData1[itemIndex1] = itemdata;
-
+    $.ajax({
+      method: "POST",
+      url: ContextPath + ":8081" + "/api/check-list-items",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(CheckListItemCreateDTO),
+      success: function (data) {
+        getAllDataFromServer();
+      },
+      error: function (xhr, error) {
+        // onError(xhr, error);
+        // Swal.fire({
+        //   title: xhr.responseText
+        // });
+      },
+    });
     console.log("save alldata");
-    localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
     localStorage.removeItem("checklistData");
     $("#exampleModal").modal("hide");
     $("#tbodyCheckListitemCodel").html("");
@@ -641,8 +686,8 @@ if (!this.Registraion) {
 
 
 
-
-  function saveRow2($row) {
+  // method For save Update ChecklistList
+  function saveNewCheckList($row) {
     var hrefId;
     var checklistNamenew;
     $row.find("td").each(function () {
@@ -663,23 +708,27 @@ if (!this.Registraion) {
     });
     $row.find(".edit").text("Edit");
 
-    let checklistData1 = [];
-    checklistData1 =
-      JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
+    checklistUpdateDTO.checklistName = checklistNamenew
+    $.ajax({
+      method: "PUT",
+      url: ContextPath + ":8081" + "/api/check-lists/" + hrefId,
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(checklistUpdateDTO),
+      success: function (data) {
+        getAllDataFromServer();
+      },
+      error: function (xhr, error) {
+        // onError(xhr, error);
+        // Swal.fire({
+        //   title: xhr.responseText
+        // });
+      },
+    });
 
-    let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
-    var itemdata = checklistData1.find((item) => item.id === hrefId);
-    itemdata.checklistName = checklistNamenew;
-    checklistData1[itemIndex1] = itemdata;
-    localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
   }
-
-
-
-
-
-
-
 
 
 
@@ -692,7 +741,6 @@ if (!this.Registraion) {
     let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
     if (itemIndex1 !== -1) {
       checklistData1.splice(itemIndex1, 1);
-
       // Update the local storage with the modified array
       localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
     }
@@ -902,3 +950,71 @@ if (!this.Registraion) {
     }
   }
 })();
+
+
+
+
+function getAlldata(data) {
+  console.log(data);
+  $("#checklistTable").html(" ");
+  let checklist2 = [];
+  checklist2 = data;
+  var div = "";
+  // Use the .each() method to iterate over the array and append content
+  $.each(checklist2, function (index, value) {
+    var checklistContent2 = "";
+
+    var tableRow = '<tr data-id="' +
+      value.id +
+      '"><td class="col-9" data-column="checklisName"><a class="btn  m-2" data-bs-toggle="collapse" role="button" href="#' +
+      value.id +
+      '"aria-expanded="false" aria-controls="' +
+      value.id +
+      '"><i class="fa-regular fa-square-plus"></i></a>' +
+      value.checklistName +
+      "</td>" +
+      '<td class="col-3 actions"><div class="cd-center actions">' +
+      '<button class="btn m-1 edit1"><i class="fa-regular fa-pen-to-square"></i></button>' +
+      '<button class="btn m-1 delete1 actions"><i class="fa-solid fa-trash"></i></button>' +
+      '<button class="btn m-1 add actions" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="fa-solid fa-circle-plus"></i></button>' +
+      "</td></tr>";
+
+    div += tableRow;
+
+    var innerrows = '<tr class="collapse"' +
+      'id="' +
+      value.id +
+      '">' +
+      '<td colspan="2">' +
+      '<table class="table table-collapse table-striped col-12">' +
+      "<thead><tr>" +
+      '<th class="col-3">Question</th>' +
+      '<th class="col-3">Value</th>' +
+      '<th class="col-3">Priority</th>' +
+      '<th class="col-3 cd-center">Actions</th></tr></thead><tbody id ="cotbody">';
+
+    div += innerrows;
+
+    $.each(value.checkListItemDTO, function (itemIndex, item) {
+      checklistContent2 +=
+        '<tr data-id="' +
+        item.id +
+        '"><td class="col-3" data-column="checklistItemName">' +
+        item.checklistItemName +
+        '</td><td class="col-3" data-column="score">' +
+        item.value +
+        '</td><td class="col-3 dropdown-column" data-column="priorityLevel">' +
+        item.priorityLevel +
+        "</td>" +
+        '<td class="col-3 actions"><div class="cd-center actions"><button class="btn btn-primary m-2 edit">Edit</button>' +
+        '<button class="btn btn-danger m-2 delete actions">Delete</button></div>' +
+        "</td></tr>";
+    });
+
+    div += checklistContent2;
+    div += "</tbody></table></td>";
+  });
+
+  $("#checklistTable").append(div);
+}
+

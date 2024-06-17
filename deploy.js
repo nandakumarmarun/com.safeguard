@@ -1,4 +1,4 @@
-const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
@@ -22,18 +22,14 @@ const mimeTypes = {
     '.svg': 'application/image/svg+xml'
 };
 
-const server = https.createServer((req, res) => {
+const server = http.createServer((req, res) => {
     let requestedUrl = decodeURIComponent(req.url);
-    console.log(`Requested URL: ${requestedUrl}`);
     let filePath;
 
     if (requestedUrl === '/') {
-        console.log(`Requested URL if : ${requestedUrl}`);
         filePath = path.join(__dirname, 'HTML', 'landing.html');
-        console.log(`Requested URL if : ${filePath}`);
     } else {
-        console.log(`Requested URL else: ${requestedUrl}`);
-        filePath = path.join(__dirname, filePath);
+        filePath = path.join(__dirname, requestedUrl);
     }
 
     // Append '.html' if there's no extension in the requested URL
