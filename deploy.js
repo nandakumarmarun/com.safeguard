@@ -66,6 +66,6 @@ const server = http.createServer((req, res) => {
     });
 });
 
-server.listen(hostname/HTML/landing, () => {
+server.listen(hostname, () => {
     console.log(`Server running at http://${hostname}/`);
 });
