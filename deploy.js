@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const hostname = 'localhost';
+const hostname = 'security-analyzer-views.onrender.com';
 const port = 80;
 
 const mimeTypes = {
@@ -66,6 +66,6 @@ const server = http.createServer((req, res) => {
     });
 });
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+server.listen(hostname, () => {
+    console.log(`Server running at https://${hostname}/`);
 });
