@@ -2,7 +2,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-const hostname = 'security-analyzer-views.onrender.com';
+const hostname = '0.0.0.0';
 const port = 443;
 
 const mimeTypes = {
