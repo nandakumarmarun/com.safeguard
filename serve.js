@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const hostname = 'localhost';
+const hostname = 'https://security-analyzer-views.onrender.com';
 const port = 80;
 
 const mimeTypes = {

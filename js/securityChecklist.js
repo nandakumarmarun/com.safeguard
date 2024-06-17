@@ -126,26 +126,24 @@ if (!this.Registraion) {
     tabody += `<div class="step step-0 active">
         <div class="div">
             <form action="">
-                <label class="m-2">Company</label>
-                <select id="priority" class="form-select mt-2" id="inputGroupSelect01">
+            <label class="m-2">Company</label>
+            <div class="input-group mb-3">
+            <select id="priority" class="form-select mt-2" id="inputGroupSelect01">
                     <option value="HIGH" selected>HIGH</option>
-                    <option value="MEDIUM">MEDIUM</option>
-                    <option value="LOW">LOW</option>
-                </select>
-                <label class="m-2">SystemNo</label>
-                <input id="systemNo" type="text" class="form-control mt-2" placeholder="Enter System Number"
-                    aria-label="SystemNo" />
-                <label class="m-2">Project Name</label>
-                <input id="projectName" type="text" class="form-control mt-2" placeholder="Enter Project Name"
-                    aria-label="Project Name" />
+            </select>
+            <button class="btn btn-outline-secondary mt-2" id="addclit" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-plus"></i></button></div>
+            <label class="m-2">SystemNo</label>
+            <input id="systemNo" type="text" class="form-control mt-2" placeholder="Enter System Number" aria-label="SystemNo" />
+            <label class="m-2">Project Name</label>
+            <input id="projectName" type="text" class="form-control mt-2" placeholder="Enter Project Name" aria-label="Project Name" />
             </form>
-            <button type="button" class="btn btn-primary btn-1 m-3 next-step">Next</button>
-        </div>
-    </div>`;
+            <div class="row mt-5"><div class="col text-end p-3">
+            <button type="button" class="btn btn-primary btn-1 m-3 next-step">Next</button></div></div>
+        </div></div>`;
 
     sideBarItems += '<div class="sidebar-item m-3 text-center step-0 active'
-        + '">'
-        + '<h3>New Test</h3></div>'
+      + '">'
+      + '<h3>New Test</h3></div>'
 
     $.each(checklist2, function (index, value) {
       var activeClass = (index === 0) ? ' active' : '';
@@ -180,7 +178,7 @@ if (!this.Registraion) {
       var buttondiv = '<div class="row mt-5"><div class="col text-end p-3">'
       tabody += buttondiv;
 
-      
+
       tabody += '<button type="button" class="btn btn-secondary btn-1 m-3 prev-step">Previous</button>'
       if (index < checklist2.length - 1) {
         tabody += '<button type = "button" class="btn btn-primary btn-1 m-3 next-step" >Next</button>'

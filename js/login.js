@@ -113,7 +113,7 @@ if (!this.Form) {
   };
 
   const sample = async () => {
-    let delayres = await delay(3000);
+    let delayres = await delay(2000);
     location.href = "http://localhost:80/HTML/new"
   };
 
