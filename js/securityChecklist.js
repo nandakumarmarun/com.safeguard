@@ -25,6 +25,19 @@ if (!this.Registraion) {
     companyId: null
   };
 
+  const SecurityTestUpdateDTO = {
+    id: null,
+    applicationName: null,
+    systemNo: null,
+    department: null,
+    testStatus: null,
+    testScore: null,
+    securityLevel: null,
+    testCheckLists: [],
+    userId: null,
+    companyId: null
+  };
+
   var testCheckLists = {
     marked: false,
     testCheckListItems: []
@@ -76,6 +89,7 @@ if (!this.Registraion) {
   $(document).ready(function () {
 
     getAllDataFromServer();
+    // disableBackButton();
 
 
 
@@ -85,6 +99,15 @@ if (!this.Registraion) {
       SUbmitTest();
     });
   });
+
+
+
+  // function disableBackButton() {
+  //   window.history.pushState(null, "", window.location.href);
+  //   $(window).on('popstate', function () {
+  //     window.history.pushState(null, "", window.location.href);
+  //   });
+  // }
 
 
   function getAllDataFromServer() {
@@ -208,11 +231,12 @@ if (!this.Registraion) {
       data: JSON.stringify(SecurityTestCreateDTO),
       success: function (data) {
         console.log(data)
-        if(data.testStatus == "EXCELLENT"){
+        reset();
+        if (data.securityLevel == "EXCELLENT") {
           Excellent(data);
-        }else if(data.testStatus == "MODERATE"){
+        } else if (data.securityLevel == "MODERATE") {
           Moderate(data)
-        }else{
+        } else {
           Critcal(data)
         }
       },
@@ -222,29 +246,103 @@ if (!this.Registraion) {
   }
 
 
+  function UpdateTest() {
+    SecurityTestCreateDTO.applicationName = $('#projectName').val();
+    SecurityTestCreateDTO.systemNo = parseInt($('#systemNo').val());
+    SecurityTestCreateDTO.companyId = parseInt($('#priority').val());
+
+    const checkLists = {};
+
+    $('.form-check-input').each(function () {
+      const checkListId = $(this).data('checklistid');
+      const checkListItemId = $(this).data('checklistitemid');
+      const isChecked = $(this).is(':checked');
+
+      if (!checkLists[checkListId]) {
+        checkLists[checkListId] = [];
+      }
+
+      checkLists[checkListId].push({
+        marked: isChecked,
+        checklistitemId: checkListItemId
+      });
+    });
+
+    const testCheckLists = Object.keys(checkLists).map(checkListId => ({
+      checkListId: parseInt(checkListId),
+      testCheckListItems: checkLists[checkListId]
+    }));
+
+    SecurityTestCreateDTO.testCheckLists = testCheckLists;
+
+    console.log(SecurityTestCreateDTO)
+
+
+    $.ajax({
+      method: "POST",
+      url: ContextPath + ":8081" + "/api/security-tests",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(SecurityTestCreateDTO),
+      success: function (data) {
+        console.log(data)
+      
+        if (data.securityLevel == "EXCELLENT") {
+          Excellent(data);
+        } else if (data.securityLevel == "MODERATE") {
+          Moderate(data)
+        } else {
+          Critcal(data)
+        }
+      },
+      error: function (xhr, error) {
+      },
+    });
+  }
+
+
+
+
+
   function Excellent(data) {
     $("#LoadingModel").modal("hide");
     Swal.fire({
-      title: data.testStatus,
+      title: data.securityLevel,
       text: data.description,
-      icon: "success"
+      icon: "success",
+      showConfirmButton:true,
+      confirmButtonText:"COMPLETED",
+      showCancelButton: true,
+      cancelButtonText: "RETEST",
+      cancelButtonColor: "#dd6b55"
     }).then((result) => {
       if (result.isConfirmed) {
         redirect();
+      } else if (result.isDismissed) {
+        getSavedTestData(data.id)
       }
     });
-  
+
   }
 
   function Moderate(data) {
     $("#LoadingModel").modal("hide");
     Swal.fire({
-      title: data.testStatus,
+      title: data.securityLevel,
       text: data.description,
-      icon: "info"
+      icon: "info",
+      showConfirmButton:true,
+      confirmButtonText:"COMPLETED",
+      showCancelButton: true,
+      cancelButtonText: "RETEST",
+      cancelButtonColor: "#dd6b55"
     }).then((result) => {
       if (result.isConfirmed) {
         redirect();
+      } else if (result.isDismissed) {
+        getSavedTestData(data.id)
       }
     });
   }
@@ -252,21 +350,82 @@ if (!this.Registraion) {
   function Critcal(data) {
     $("#LoadingModel").modal("hide");
     const { value: done } = Swal.fire({
-      title: data.testStatus,
+      title: data.securityLevel,
       text: data.description,
-      icon: "error"
+      icon: "error",
+      showConfirmButton:true,
+      confirmButtonText:"COMPLETED",
+      showCancelButton: true,
+      cancelButtonText: "RETEST",
+      cancelButtonColor: "#dd6b55"
     }).then((result) => {
       if (result.isConfirmed) {
         redirect();
+      } else if (result.isDismissed) {
+        getSavedTestData(data.id)
       }
     });
   }
 
+  function getSavedTestData(testId) {
+    $.ajax({
+      method: "GET",
+      url: ContextPath + ":8081" + "/api/security-tests/" + testId,
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
+      success: function (data) {
+        populateForm(data);
+      },
+      error: function (xhr, error) {
+        console.error("Failed to fetch saved test data:", error);
+      },
+    });
+  }
 
-  const sample = async () => {
 
-    location.href = "http://localhost:80/HTML/new"
-  };
+  function populateForm(data) {
+    $('#projectName').val(data.applicationName);
+    $('#systemNo').val(data.systemNo);
+    $('#priority').val(data.companyId);
+
+    // Clear existing checkboxes
+    $('.form-check-input').prop('checked', false);
+
+    // Check the relevant checkboxes
+    data.testCheckListResponseDTOS.forEach(checkList => {
+      checkList.testCheckListItemResoponseDTOS.forEach(item => {
+        const checkbox = $(`.form-check-input[data-checklistitemId=${item.checklistitemId}]`);
+        checkbox.prop('checked', item.marked);
+      });
+    });
+
+    // Store the test ID for updates
+    $('#testId').val(data.id);
+  }
+
+  function reset() {
+    $('.form-check-input').prop('checked', false);
+    $('#projectName').val("");
+    $('#systemNo').val("");
+    $('#priority').val("");
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   function loadQuetions(data) {
@@ -372,7 +531,7 @@ if (!this.Registraion) {
     return new Promise(resolve => setTimeout(resolve, delayInms));
   };
 
-  
+
 
   function intializeButtons() {
     var currentStep = 0;
