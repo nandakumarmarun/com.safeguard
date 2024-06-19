@@ -7,8 +7,8 @@ if (!this.Form) {
 (function () {
   "use strict";
 
-  var formContextPath =
-    location.protocol + "//" + location.host + location.pathname;
+  var ContextPath =
+    location.protocol + "//" + location.host;
   
   var createEditForm = $("#loginForm");
   var deleteForm = $("#deleteForm");
@@ -76,7 +76,7 @@ if (!this.Form) {
 		loginModel.password = $('#form-password').val();
 		$.ajax({
 			method : 'POST',
-			url : "http://localhost:8081/api/v1/auth/authenticate",
+			url : ContextPath + ":8081/api/v1/auth/authenticate",
 			contentType : "application/json; charset=utf-8",
 			data : JSON.stringify(loginModel),
 			success : function(data) {
@@ -114,17 +114,17 @@ if (!this.Form) {
 
   const sample = async () => {
     let delayres = await delay(2000);
-    location.href = "http://localhost:80/HTML/new"
+    location.href = ContextPath + "/HTML/dashboard"
   };
 
   // function onSaveSuccess(result) {
   //   // reloading page to see the updated data
-  //   window.location = formContextPath;
+  //   window.location = ContextPath;
   // }
 
   function onDeleteSuccess(result) {
     // reloading page to see the updated data
-    window.location = formContextPath;
+    window.location = ContextPath;
   }
 
   Form.showModalPopup = function (el, id, action, obj) {
@@ -139,7 +139,7 @@ if (!this.Form) {
           createEditForm.attr("method", "PUT");
           break;
         case 2:
-          deleteForm.attr("action", formContextPath + "/" + id);
+          deleteForm.attr("action", ContextPath + "/" + id);
           break;
         case 3:
           loadQuestions(id);

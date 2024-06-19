@@ -524,7 +524,7 @@ if (!this.Registraion) {
   }
 
   const redirect = async () => {
-    location.href = "http://localhost:80/HTML/new"
+    location.href = ContextPath +"/HTML/dashboard"
   };
 
   const delay = (delayInms) => {
