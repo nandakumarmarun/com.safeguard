@@ -87,7 +87,7 @@ if (!this.Registraion) {
   };
 
   $(document).ready(function () {
-
+    $("#LoadingModel2").modal("show");
     getAllDataFromServer();
     // disableBackButton();
 
@@ -96,7 +96,27 @@ if (!this.Registraion) {
     $("#multiStepForm").submit(function (event) {
       event.preventDefault();
       $("#LoadingModel").modal("show");
-      SUbmitTest();
+      if (SecurityTestUpdateDTO.id == null) {
+        SUbmitTest();
+      }else{
+        UpdateTest();
+      }
+
+    });
+
+
+
+
+    window.addEventListener("beforeunload", function (e) {
+      // Custom message for the popup
+      var confirmationMessage = "Are you sure you want to leave? Your data will be saved.";
+
+      // Save data to the server
+      this.alert(confirmationMessage)
+
+      // Show the popup
+      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
+      return confirmationMessage; // Gecko, WebKit, Chrome <34
     });
   });
 
@@ -110,23 +130,24 @@ if (!this.Registraion) {
   // }
 
 
-  function getAllDataFromServer() {
-    $.ajax({
-      method: "GET",
-      url: ContextPath + ":8081" + "/api/check-lists",
-      contentType: "application/json; charset=utf-8",
-      headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
-      },
-      success: function (data) {
-        loadQuetions(data);
-        intializeButtons();
-        loadCompanies();
-      },
-      error: function (xhr, error) {
-      },
-    });
-  }
+  // function getAllDataFromServer() {
+  //   $("#LoadingModel").modal("hide");
+  //   $.ajax({
+  //     method: "GET",
+  //     url: ContextPath + ":8081" + "/api/check-lists",
+  //     contentType: "application/json; charset=utf-8",
+  //     headers: {
+  //       "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+  //     },
+  //     success: function (data) {
+  //       loadQuetions(data);
+  //       intializeButtons();
+  //       loadCompanies();
+  //     },
+  //     error: function (xhr, error) {
+  //     },
+  //   });
+  // }
 
   function getAllDataFromServer() {
     $.ajax({
@@ -247,9 +268,9 @@ if (!this.Registraion) {
 
 
   function UpdateTest() {
-    SecurityTestCreateDTO.applicationName = $('#projectName').val();
-    SecurityTestCreateDTO.systemNo = parseInt($('#systemNo').val());
-    SecurityTestCreateDTO.companyId = parseInt($('#priority').val());
+    SecurityTestUpdateDTO.applicationName = $('#projectName').val();
+    SecurityTestUpdateDTO.systemNo = parseInt($('#systemNo').val());
+    SecurityTestUpdateDTO.companyId = parseInt($('#priority').val());
 
     const checkLists = {};
 
@@ -257,38 +278,43 @@ if (!this.Registraion) {
       const checkListId = $(this).data('checklistid');
       const checkListItemId = $(this).data('checklistitemid');
       const isChecked = $(this).is(':checked');
+      const testCheckListId = $(this).data('testchecklist');
+      const testCheckListItemId = $(this).data('testcheklistitem');
+
 
       if (!checkLists[checkListId]) {
         checkLists[checkListId] = [];
       }
 
       checkLists[checkListId].push({
+        id:testCheckListItemId,
         marked: isChecked,
-        checklistitemId: checkListItemId
+        checklistitemId: checkListItemId,
+        testCheckListId:testCheckListId
       });
     });
 
     const testCheckLists = Object.keys(checkLists).map(checkListId => ({
+      id: checkLists[checkListId][0].testCheckListId, // Adjust this according to your actual data structure
       checkListId: parseInt(checkListId),
       testCheckListItems: checkLists[checkListId]
     }));
 
-    SecurityTestCreateDTO.testCheckLists = testCheckLists;
+    SecurityTestUpdateDTO.testCheckLists = testCheckLists;
 
-    console.log(SecurityTestCreateDTO)
+    console.log(SecurityTestUpdateDTO)
 
 
     $.ajax({
-      method: "POST",
-      url: ContextPath + ":8081" + "/api/security-tests",
+      method: "PUT",
+      url: ContextPath + ":8081" + "/api/security-tests/"+SecurityTestUpdateDTO.id,
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
       },
-      data: JSON.stringify(SecurityTestCreateDTO),
+      data: JSON.stringify(SecurityTestUpdateDTO),
       success: function (data) {
         console.log(data)
-      
         if (data.securityLevel == "EXCELLENT") {
           Excellent(data);
         } else if (data.securityLevel == "MODERATE") {
@@ -312,14 +338,14 @@ if (!this.Registraion) {
       title: data.securityLevel,
       text: data.description,
       icon: "success",
-      showConfirmButton:true,
-      confirmButtonText:"COMPLETED",
+      showConfirmButton: true,
+      confirmButtonText: "COMPLETED",
       showCancelButton: true,
       cancelButtonText: "RETEST",
       cancelButtonColor: "#dd6b55"
     }).then((result) => {
       if (result.isConfirmed) {
-        redirect();
+        updateStatus(data.id);
       } else if (result.isDismissed) {
         getSavedTestData(data.id)
       }
@@ -333,13 +359,14 @@ if (!this.Registraion) {
       title: data.securityLevel,
       text: data.description,
       icon: "info",
-      showConfirmButton:true,
-      confirmButtonText:"COMPLETED",
+      showConfirmButton: true,
+      confirmButtonText: "COMPLETED",
       showCancelButton: true,
       cancelButtonText: "RETEST",
       cancelButtonColor: "#dd6b55"
     }).then((result) => {
       if (result.isConfirmed) {
+        updateStatus(data.id);
         redirect();
       } else if (result.isDismissed) {
         getSavedTestData(data.id)
@@ -353,13 +380,14 @@ if (!this.Registraion) {
       title: data.securityLevel,
       text: data.description,
       icon: "error",
-      showConfirmButton:true,
-      confirmButtonText:"COMPLETED",
+      showConfirmButton: true,
+      confirmButtonText: "COMPLETED",
       showCancelButton: true,
       cancelButtonText: "RETEST",
       cancelButtonColor: "#dd6b55"
     }).then((result) => {
       if (result.isConfirmed) {
+        updateStatus(data.id);
         redirect();
       } else if (result.isDismissed) {
         getSavedTestData(data.id)
@@ -384,6 +412,23 @@ if (!this.Registraion) {
     });
   }
 
+  function updateStatus(testId) {
+    $.ajax({
+      method: "PUT",
+      url: ContextPath + ":8081" + "/api/security-tests/update-status/" + testId,
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
+      success: function (data) {
+        redirect();
+      },
+      error: function (xhr, error) {
+        console.error("Failed to fetch saved test data:", error);
+      },
+    });
+  }
+
 
   function populateForm(data) {
     $('#projectName').val(data.applicationName);
@@ -396,13 +441,17 @@ if (!this.Registraion) {
     // Check the relevant checkboxes
     data.testCheckListResponseDTOS.forEach(checkList => {
       checkList.testCheckListItemResoponseDTOS.forEach(item => {
+        // const checkbox = $(`.form-check-input[data-checklistitemId=${item.checklistitemId}][data-testchecklistitemId=${item.id}]`);
         const checkbox = $(`.form-check-input[data-checklistitemId=${item.checklistitemId}]`);
         checkbox.prop('checked', item.marked);
+        checkbox.attr('data-testcheklistItem', item.id);
+        checkbox.attr('data-testchecklist', checkList.id);
       });
     });
 
     // Store the test ID for updates
     $('#testId').val(data.id);
+    SecurityTestUpdateDTO.id = data.id
   }
 
   function reset() {
@@ -429,6 +478,7 @@ if (!this.Registraion) {
 
 
   function loadQuetions(data) {
+    $("#LoadingModel2").modal("hide");
     let checklist2 = [];
     checklist2 = data
     var tabody = ""
@@ -524,7 +574,7 @@ if (!this.Registraion) {
   }
 
   const redirect = async () => {
-    location.href = ContextPath +"/HTML/dashboard"
+    location.href = ContextPath + "/HTML/dashboard"
   };
 
   const delay = (delayInms) => {
