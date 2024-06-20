@@ -1,186 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-  <link rel="stylesheet" href="../css/dashboard.css" />
-</head>
-
-<body>
-
-  <div class="container-fluid">
-    <div class="row flex-nowrap">
-      <div class="bg-dark col-auto col-md-3 col-md-4 col-xl-3 col-xxl-2 min-vh-100">
-        <div class="bg-dark p-2">
-          <ul class="nav nav-pills flex-column">
-            <li class="nav-item  mb-1 py-2 py-sm-0">
-              <a href="#" class="nav-link text-white">
-                <img src="../assets/logo.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top" />
-                <span class="fs-4 ms-3 d-none d-sm-inline">NANDAKUMAR</span>
-              </a>
-            </li>
-            <li class="nav-item py-2 py-sm-0">
-              <a href="#" class="nav-link active text-white">
-                <i class="fa-solid fa-house fs-4" style="color: #ffffff;"></i><span
-                  class="fs-5 ms-3 d-none d-sm-inline">Home</span>
-              </a>
-            </li>
-            <li class="nav-item py-2 py-sm-0 ">
-              <a href="#" class="nav-link text-white">
-                <i class="fa-solid fa-user fs-4" style="color: #ffffff;"></i>
-                <span class="fs-5 ms-3 d-none d-sm-inline">Profile</span>
-              </a>
-            </li>
-            <li class="nav-item py-2 py-sm-0 ">
-              <a href="#" class="nav-link text-white">
-                <i class="fa-solid fa-shield fs-4" style="color: #ffffff;"></i>
-                <span class="fs-5 ms-2 d-none d-sm-inline">Test
-                  Report</span>
-              </a>
-            </li>
-            <li class="nav-item py-2 py-sm-0">
-              <a href="#" class="nav-link text-white">
-                <i class="fa-solid fa-building fs-4" style="color: #ffffff;"></i><span
-                  class="fs-5 ms-3 d-none d-sm-inline">Companies</span>
-              </a>
-            </li>
-            <li class="nav-item py-2 py-sm-0">
-              <a href="#" class="nav-link text-white">
-                <i class="fa-solid fa-right-from-bracket" style="color: #ffffff;"></i><span
-                  class="fs-5 ms-3 d-none d-sm-inline">Logout</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-9 col-md-9 col-xl-9 col-lg-9 col-xxl-10 min-vh-100">
-        <div class="dashboard-body">
-          <div class="row dashboard-cards d-flex justify-content-around">
-            <div class="dash-board-item-1 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <span class="fs-3  fw-1 text-white">SUCCESS</span>
-              <h1 class="fs-1 text-white">10</h1>
-            </div>
-            <div class="dash-board-item-2 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <span class="fs-3  fw-1 text-white">FALED</span>
-              <h1 class=" fs-1 text-white">10</h1>
-            </div>
-            <div class="dash-board-item-3 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <span class="fs-3 fw-1 text-white">MODERATE</span>
-              <h1 class="fs-1 fw-1 text-white">10</h1>
-            </div>
-            <div id="chart-Container" class="dash-board-item-4 col-sm-12 col-md-4 col-lg-4 col-xl-11 col-xxl-3">
-              <canvas id="chartContainer"></canvas>
-            </div>
-            <!-- <div class="col-12">
-              <Button class="btn btn-success col-12">NEW TEST</Button>
-            </div> -->
-            <!-- <table class="table table-striped me-2 ms-2">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">First</th>
-                  <th scope="col">Last</th>
-                  <th scope="col">Handle</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Larry</td>
-                  <td>the Bird</td>
-                  <td>@twitter</td>
-                </tr>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Larry</td>
-                  <td>the Bird</td>
-                  <td>@twitter</td>
-                </tr>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Larry</td>
-                  <td>the Bird</td>
-                  <td>@twitter</td>
-                </tr>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-              </tbody>
-            </table> -->
+  <body>
+    <div class="container-fluid">
+      <div class="row flex-nowrap">
+        <div
+          class="bg-dark col-auto col-md-3 col-md-4 col-xl-3 col-xxl-2 min-vh-100"
+        >
+          <div class="bg-dark p-2">
+            <ul class="nav nav-pills flex-column">
+              <li class="nav-item mb-1 py-2 py-sm-0">
+                <a href="#" class="nav-link text-white">
+                  <img
+                    src="../assets/logo.png"
+                    alt="Logo"
+                    width="30"
+                    height="24"
+                    class="d-inline-block align-text-top"
+                  />
+                  <span class="fs-4 ms-3 d-none d-sm-inline">NANDAKUMAR</span>
+                </a>
+              </li>
+              <li class="nav-item py-2 py-sm-0">
+                <a href="#" class="nav-link active text-white" data-content="home">
+                  <i class="fa-solid fa-house fs-4" style="color: #ffffff"></i
+                  ><span class="fs-5 ms-3 d-none d-sm-inline">Home</span>
+                </a>
+              </li>
+              <li class="nav-item py-2 py-sm-0">
+                <a href="#" class="nav-link text-white" data-content="profile">
+                  <i class="fa-solid fa-user fs-4" style="color: #ffffff"></i>
+                  <span class="fs-5 ms-3 d-none d-sm-inline">Profile</span>
+                </a>
+              </li>
+              <li class="nav-item py-2 py-sm-0">
+                <a href="#" class="nav-link text-white" data-content="Report">
+                  <i class="fa-solid fa-shield fs-4" style="color: #ffffff"></i>
+                  <span class="fs-5 ms-2 d-none d-sm-inline">Test Report</span>
+                </a>
+              </li>
+              <li class="nav-item py-2 py-sm-0">
+                <a href="#" class="nav-link text-white" data-content="Companies">
+                  <i
+                    class="fa-solid fa-building fs-4"
+                    style="color: #ffffff"
+                  ></i
+                  ><span class="fs-5 ms-3 d-none d-sm-inline">Companies</span>
+                </a>
+              </li>
+              <li class="nav-item py-2 py-sm-0">
+                <a href="#" class="nav-link text-white" data-content="logout">
+                  <i
+                    class="fa-solid fa-right-from-bracket"
+                    style="color: #ffffff"
+                  ></i
+                  ><span class="fs-5 ms-3 d-none d-sm-inline">Logout</span>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="dashbord-table">
-          <div class="raw">
+        <div
+          class="col-md-9 col-md-9 col-xl-9 col-lg-9 col-xxl-10 min-vh-100"
+          id="dashboard-container">
+          
+        </div>
+      </div>
+    </div>
 
+    <div
+      class="modal fade"
+      id="LoadingModel"
+      tabindex="-1"
+      data-bs-backdrop="static"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-  </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
 
-
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-    crossorigin="anonymous"></script>
-
-  <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-  <script type="text/javascript" src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="../js/dashboard.js"></script>
-</body>
-
+    <script
+      type="text/javascript"
+      src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/dashboard.js"></script>
+  </body>
 </html>
