@@ -117,6 +117,27 @@ if (!this.Form) {
     location.href = ContextPath + "/HTML/dashboard"
   };
 
+
+
+
+  function getCurrentSession() {
+    $("#tbody-comapany").html(loading);
+    $.ajax({
+      method: "GET",
+      url: ContextPath + ":8081" + "api/v1/user/current-session",
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      success: function (data) {
+      },
+      error: function (xhr, error) {
+      },
+    });
+  }
+
+
+
   // function onSaveSuccess(result) {
   //   // reloading page to see the updated data
   //   window.location = ContextPath;
