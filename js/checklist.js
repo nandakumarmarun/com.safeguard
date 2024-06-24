@@ -6,9 +6,19 @@ if (!this.Registraion) {
 
 (function () {
   "use strict";
+  var apipath = "";
 
-  var ContextPath =
-    location.protocol + "//" + location.host;
+  // var ContextPath = location.protocol + "//" + location.host;
+
+  var ContextPath = "";
+  var API_PATH = "";
+
+  $.getJSON("../config.json", function (config) {
+    ContextPath = config.HOST;
+    API_PATH = ContextPath + ":" + config.PORT;
+    console.log("properties");
+    console.log("HOST:", config.HOST);
+  });
 
   // var createEditForm = $("#regForm");
   // var deleteForm = $("#deleteForm");
@@ -85,8 +95,15 @@ if (!this.Registraion) {
   };
 
   $(document).ready(function () {
+    $.getJSON("../config.json", function (config) {
+      ContextPath = config.HOST;
+      console.log("properties");
+      console.log("HOST:", config.HOST);
+    });
+
     // Define an array of contents to append
 
+    console.log(apipath);
     $("#checklistTable").on("click", ".edit1", function () {
       const $row = $(this).closest("tr");
       const $icon = $(this).find("i");
@@ -107,11 +124,10 @@ if (!this.Registraion) {
       if ($(this).text() === "Edit") {
         switchToEditMode($row);
       } else {
-        UpdateCheklistItem($row)
+        UpdateCheklistItem($row);
         // saveRow($row);
       }
     });
-
 
     $("#checklistcollapse").on("click", ".edit", function () {
       const $row = $(this).closest("tr");
@@ -122,8 +138,6 @@ if (!this.Registraion) {
       }
     });
 
-
-
     $("#checklistTable").on("click", ".add", function (event) {
       // Access the clicked button's parent table row
       var clickedRow = $(this).closest("tr");
@@ -132,25 +146,21 @@ if (!this.Registraion) {
       rawId = dataId;
     });
 
-
-
     $("#checklistTable").on("click", ".delete1", function (event) {
       // Access the clicked button's parent table row
       var clickedRow = $(this).closest("tr");
       // Extract the data-id from the table row
       var dataId = clickedRow.data("id");
-      deleteCheklist()
+      deleteCheklist();
       // deleteRow2(dataId);
       loadTable();
     });
-
-
 
     $("#checklistTable").on("click", ".delete", function (event) {
       // Access the clicked button's parent table row
       var $clickedRow = $(this).closest("tr");
       // Extract the data-id from the table row
-      deleteCheklistitem($clickedRow)
+      deleteCheklistitem($clickedRow);
       // deleteRow1($clickedRow);
     });
 
@@ -160,7 +170,6 @@ if (!this.Registraion) {
       // Extract the data-id from the table row
       deleteCartitem($clickedRow);
     });
-
 
     // offcanvas add
     $("#addclit").on("click", function () {
@@ -191,32 +200,20 @@ if (!this.Registraion) {
     getAllDataFromServer();
   });
 
-
-
-
-
   function getAllDataFromServer() {
     $.ajax({
       method: "GET",
-      url: ContextPath + ":8081" + "/api/check-lists",
+      url: API_PATH + "/api/check-lists",
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       success: function (data) {
         getAlldata(data);
       },
-      error: function (xhr, error) {
-      },
+      error: function (xhr, error) {},
     });
   }
-
-
-
-
-
-
-
 
   function loadTable() {
     $("#checklistTable").html(" ");
@@ -283,7 +280,6 @@ if (!this.Registraion) {
     $("#checklistTable").append(div);
   }
 
-
   function loadToLocalStorge() {
     let newdata = [];
 
@@ -324,7 +320,6 @@ if (!this.Registraion) {
       console.log("Registration Model Data: ", checklistData1);
     }
   }
-
 
   function loadModelToLocalStorge() {
     let newdata = [];
@@ -367,7 +362,6 @@ if (!this.Registraion) {
     }
   }
 
-
   // Print the UUID
   function uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -380,10 +374,9 @@ if (!this.Registraion) {
     );
   }
 
-
-  // SAVE NEW CHECKLSIT 
+  // SAVE NEW CHECKLSIT
   function savechecklist() {
-    console.log("url : " + ContextPath)
+    console.log("url : " + API_PATH);
 
     let newdata = [];
     let ChecklistDataList = [];
@@ -410,24 +403,24 @@ if (!this.Registraion) {
       offcanvas.hide();
     }
 
-    checklistCreateDTO.checklistName = checklistData1[0].checklistName
-    checklistCreateDTO.checkListItemDTO = checklistData1[0].checkListItemDTO
+    checklistCreateDTO.checklistName = checklistData1[0].checklistName;
+    checklistCreateDTO.checkListItemDTO = checklistData1[0].checkListItemDTO;
 
     $.ajax({
       method: "POST",
-      url: ContextPath + ":8081" + "/api/check-lists/create",
+      url: API_PATH + "/api/check-lists/create",
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       data: JSON.stringify(checklistCreateDTO),
       success: function (data) {
-        console.log(data)
+        console.log(data);
       },
       error: function (xhr, error) {
         // onError(xhr, error);
         Swal.fire({
-          title: xhr.responseText
+          title: xhr.responseText,
         });
       },
     });
@@ -438,7 +431,6 @@ if (!this.Registraion) {
     $("#priority").val($("#priority option:first").val());
     $("#checklistN").val("");
   }
-
 
   function innerTableLload() {
     let checklistData1 =
@@ -453,7 +445,9 @@ if (!this.Registraion) {
 
     $.each(value.checkListItemDTO, function (itemIndex, item) {
       checklistContent2 +=
-        '<tr id='+item.id+'><td class="col-3">' +
+        "<tr id=" +
+        item.id +
+        '><td class="col-3">' +
         item.checklistItemName +
         '</td><td class="col-3">' +
         item.value +
@@ -471,7 +465,6 @@ if (!this.Registraion) {
     $("#value").val("");
     $("#priority").val($("#priority option:first").val());
   }
-
 
   function innerTablemodelload() {
     let checklistData1 =
@@ -507,9 +500,6 @@ if (!this.Registraion) {
     $("#priorityModel").val($("#priority option:first").val());
   }
 
-
-
-
   function loadCollpase(checkListItemDTO, checklistContent2) {
     $.each(checkListItemDTO, function (itemIndex, item) {
       checklistContent2 +=
@@ -528,9 +518,6 @@ if (!this.Registraion) {
     });
     return checklistContent2;
   }
-
-
-
 
   function switchToEditMode(row) {
     row.find("td").each(function () {
@@ -572,10 +559,6 @@ if (!this.Registraion) {
     row.find(".edit").text("Save");
   }
 
-
-
-
-
   function switchToEditMode2(row) {
     row.find("td").each(function () {
       const $cell = $(this);
@@ -592,17 +575,14 @@ if (!this.Registraion) {
     row.find(".edit").text('<i class="fa-solid fa-check"></i>');
   }
 
-
-
-
-  // Update Checklist Items 
+  // Update Checklist Items
   function UpdateCheklistItem($row) {
     var hrefId = $row.closest(".collapse").attr("id");
     $row.find("td").each(function () {
       const $cell = $(this);
       if ($cell.hasClass("actions")) return;
 
-      const columnName = $cell.data("column"); 
+      const columnName = $cell.data("column");
       // Get the column name
       checkListItemDTO.id = $row.data("id");
 
@@ -628,16 +608,17 @@ if (!this.Registraion) {
     $row.find(".edit").text("Edit");
     console.log("Row updated successfully", checkListItemDTO);
     checkListItemUpdateDTO.checkListId = hrefId;
-    checkListItemUpdateDTO.id = checkListItemDTO.id
-    checkListItemUpdateDTO.checklistItemName = checkListItemDTO.checklistItemName
-    checkListItemUpdateDTO.priorityLevel = checkListItemDTO.priorityLevel
-    checkListItemUpdateDTO.value = checkListItemDTO.value
+    checkListItemUpdateDTO.id = checkListItemDTO.id;
+    checkListItemUpdateDTO.checklistItemName =
+      checkListItemDTO.checklistItemName;
+    checkListItemUpdateDTO.priorityLevel = checkListItemDTO.priorityLevel;
+    checkListItemUpdateDTO.value = checkListItemDTO.value;
     $.ajax({
       method: "PUT",
-      url: ContextPath + ":8081" + "/api/check-list-items/" + checkListItemDTO.id,
+      url: API_PATH + "/api/check-list-items/" + checkListItemDTO.id,
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       data: JSON.stringify(checkListItemUpdateDTO),
       success: function (data) {
@@ -652,7 +633,6 @@ if (!this.Registraion) {
     });
   }
 
-
   // method For save  add Item To Checklist
   function addNewItem() {
     console.log("fetch newly add data", checkListItemDTO);
@@ -663,18 +643,18 @@ if (!this.Registraion) {
     console.log("fetch all checklist");
     console.log("push new data to checklist");
     $.each(checklistitems[0].checkListItemDTO, function (index, value) {
-      CheckListItemCreateDTO.checkListId = hrefId
-      CheckListItemCreateDTO.checklistItemName = value.checklistItemName
-      CheckListItemCreateDTO.value = value.value
-      CheckListItemCreateDTO.priorityLevel = value.priorityLevel
+      CheckListItemCreateDTO.checkListId = hrefId;
+      CheckListItemCreateDTO.checklistItemName = value.checklistItemName;
+      CheckListItemCreateDTO.value = value.value;
+      CheckListItemCreateDTO.priorityLevel = value.priorityLevel;
     });
 
     $.ajax({
       method: "POST",
-      url: ContextPath + ":8081" + "/api/check-list-items",
+      url: API_PATH + "/api/check-list-items",
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       data: JSON.stringify(CheckListItemCreateDTO),
       success: function (data) {
@@ -692,8 +672,6 @@ if (!this.Registraion) {
     $("#exampleModal").modal("hide");
     $("#tbodyCheckListitemCodel").html("");
   }
-
-
 
   // method For save Update ChecklistList
   function saveNewCheckList($row) {
@@ -717,13 +695,13 @@ if (!this.Registraion) {
     });
     $row.find(".edit").text("Edit");
 
-    checklistUpdateDTO.checklistName = checklistNamenew
+    checklistUpdateDTO.checklistName = checklistNamenew;
     $.ajax({
       method: "PUT",
-      url: ContextPath + ":8081" + "/api/check-lists/" + hrefId,
+      url: API_PATH + "/api/check-lists/" + hrefId,
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       data: JSON.stringify(checklistUpdateDTO),
       success: function (data) {
@@ -736,10 +714,7 @@ if (!this.Registraion) {
         // });
       },
     });
-
   }
-
-
 
   function deleteRow2(id) {
     var hrefId = id;
@@ -755,24 +730,20 @@ if (!this.Registraion) {
     }
   }
 
-
-
   function deleteCheklist($row) {
     var hrefId = $row.closest(".collapse").attr("id");
     $.ajax({
       method: "DELETE",
-      url: ContextPath + ":8081" + "/api/check-lists/" + hrefId,
+      url: API_PATH + "/api/check-lists/" + hrefId,
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       data: JSON.stringify(checkListItemUpdateDTO),
       success: function (data) {
         getAllDataFromServer();
       },
-      error: function (xhr, error) {
-
-      },
+      error: function (xhr, error) {},
     });
   }
 
@@ -783,62 +754,59 @@ if (!this.Registraion) {
       checkListItemDTO.id = $clickedRow.data("id");
     });
 
-    console.log("item.Id", checkListItemDTO.id)
+    console.log("item.Id", checkListItemDTO.id);
 
     $.ajax({
       method: "DELETE",
-      url: ContextPath + ":8081" + "api/check-list-items" + checkListItemDTO.id,
+      url: API_PATH + "/api/check-list-items" + checkListItemDTO.id,
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       data: JSON.stringify(checkListItemUpdateDTO),
       success: function (data) {
         getAllDataFromServer();
       },
-      error: function (xhr, error) {
-
-      },
+      error: function (xhr, error) {},
     });
   }
-
-
-
-
 
   function deleteCartitem($clickedRow) {
     var hrefId = $clickedRow.attr("id");
     let checklistData1 = [];
     checklistData1 = JSON.parse(localStorage.getItem("checklistData")) || [];
-    console.log("item", checklistData1)
-    let itemIndex1 = checklistData1[0].checkListItemDTO.findIndex((item) => item.id === hrefId);
-    console.log("item.Index", itemIndex1)
+    console.log("item", checklistData1);
+    let itemIndex1 = checklistData1[0].checkListItemDTO.findIndex(
+      (item) => item.id === hrefId
+    );
+    console.log("item.Index", itemIndex1);
     var itemdata = checklistData1[0].checkListItemDTO;
-    console.log("delete Berfore", itemdata)
+    console.log("delete Berfore", itemdata);
     itemdata.splice(itemIndex1, 1);
-    console.log("After", itemdata)
+    console.log("After", itemdata);
     checklistData1[0].checkListItemDTO = itemdata;
 
-    console.log("final", checklistData1)
+    console.log("final", checklistData1);
 
     // if (itemIndex1 !== -1) {
     //   let itemIndex2 = itemdata.checkListItemDTO.findIndex((item) => item.id === checkListItemDTO.id);
     //   itemdata.checkListItemDTO.splice(itemIndex2, 1);
-      
-      localStorage.setItem("checklistData", JSON.stringify(checklistData1));
-      let Data1 = [];
-      Data1 = JSON.parse(localStorage.getItem("checklistData")) || [];
-      $("#checklistcollapse").html(" ");
-      var tbody = "";
-      var checklistContent2 = " ";
-      checklistContent2 = loadCollpase(Data1[0].checkListItemDTO, checklistContent2);
-      tbody += checklistContent2;
-      $("#checklistcollapse").append(tbody);
+
+    localStorage.setItem("checklistData", JSON.stringify(checklistData1));
+    let Data1 = [];
+    Data1 = JSON.parse(localStorage.getItem("checklistData")) || [];
+    $("#checklistcollapse").html(" ");
+    var tbody = "";
+    var checklistContent2 = " ";
+    checklistContent2 = loadCollpase(
+      Data1[0].checkListItemDTO,
+      checklistContent2
+    );
+    tbody += checklistContent2;
+    $("#checklistcollapse").append(tbody);
     // }
   }
 
-
-
   function deleteCheklistitem($row) {
     var hrefId = $row.closest(".collapse").attr("id");
 
@@ -846,22 +814,20 @@ if (!this.Registraion) {
       checkListItemDTO.id = $clickedRow.data("id");
     });
 
-    console.log("item.Id", checkListItemDTO.id)
+    console.log("item.Id", checkListItemDTO.id);
 
     $.ajax({
       method: "DELETE",
-      url: ContextPath + ":8081" + "api/check-list-items" + checkListItemDTO.id,
+      url: API_PATH + "/api/check-list-items" + checkListItemDTO.id,
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       data: JSON.stringify(checkListItemUpdateDTO),
       success: function (data) {
         getAllDataFromServer();
       },
-      error: function (xhr, error) {
-
-      },
+      error: function (xhr, error) {},
     });
   }
 
@@ -872,25 +838,22 @@ if (!this.Registraion) {
       checkListItemDTO.id = $clickedRow.data("id");
     });
 
-    console.log("item.Id", checkListItemDTO.id)
+    console.log("item.Id", checkListItemDTO.id);
 
     $.ajax({
       method: "DELETE",
-      url: ContextPath + ":8081" + "api/check-list-items" + checkListItemDTO.id,
+      url: API_PATH + "/api/check-list-items" + checkListItemDTO.id,
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       data: JSON.stringify(checkListItemUpdateDTO),
       success: function (data) {
         getAllDataFromServer();
       },
-      error: function (xhr, error) {
-
-      },
+      error: function (xhr, error) {},
     });
   }
-
 
   // function getToken(data) {
   //   loginModel.login = data.login;
@@ -928,14 +891,10 @@ if (!this.Registraion) {
     return new Promise((resolve) => setTimeout(resolve, delayInms));
   };
 
-
   const sample = async () => {
     let delayres = await delay(3000);
     location.href = "http://localhost:80/HTML/new";
   };
-
-
-
 
   // function onSaveSuccess(result) {
   //   // reloading page to see the updated data
@@ -1048,9 +1007,6 @@ if (!this.Registraion) {
   }
 })();
 
-
-
-
 function getAlldata(data) {
   console.log(data);
   $("#checklistTable").html(" ");
@@ -1061,7 +1017,8 @@ function getAlldata(data) {
   $.each(checklist2, function (index, value) {
     var checklistContent2 = "";
 
-    var tableRow = '<tr data-id="' +
+    var tableRow =
+      '<tr data-id="' +
       value.id +
       '"><td class="col-9" data-column="checklisName"><a class="btn  m-2" data-bs-toggle="collapse" role="button" href="#' +
       value.id +
@@ -1078,7 +1035,8 @@ function getAlldata(data) {
 
     div += tableRow;
 
-    var innerrows = '<tr class="collapse"' +
+    var innerrows =
+      '<tr class="collapse"' +
       'id="' +
       value.id +
       '">' +
@@ -1114,4 +1072,3 @@ function getAlldata(data) {
 
   $("#checklistTable").append(div);
 }
-

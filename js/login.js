@@ -7,8 +7,19 @@ if (!this.Form) {
 (function () {
   "use strict";
 
-  var ContextPath =
-    location.protocol + "//" + location.host;
+  var ContextPath = "";
+  var Port = "";
+  var API_PATH = "";
+
+    // location.protocol + "//" + location.host;
+
+    $.getJSON("../config.json", function (config) {
+      ContextPath = config.HOST;
+      Port =  config.PORT;
+      API_PATH = ContextPath + ":" +config.PORT
+      console.log("properties");
+      console.log("HOST:", config.HOST);
+    });
 
   var createEditForm = $("#loginForm");
   var deleteForm = $("#deleteForm");
@@ -76,7 +87,7 @@ if (!this.Form) {
     loginModel.password = $('#form-password').val();
     $.ajax({
       method: 'POST',
-      url: ContextPath + ":8081/api/v1/auth/authenticate",
+      url: API_PATH + "/api/v1/auth/authenticate",
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify(loginModel),
       success: function (data) {
@@ -114,7 +125,7 @@ if (!this.Form) {
 
   const sample = async () => {
     let delayres = await delay(2000);
-    location.href = ContextPath + "/HTML/dashboard"
+    location.href = ContextPath  + "/HTML/dashboard"
   };
 
   const adminPage = async () => {
@@ -125,7 +136,7 @@ if (!this.Form) {
   function setuserName() {
     $.ajax({
       method: "GET",
-      url: ContextPath + ":8081" + "/api/v1/user/current-session",
+      url: API_PATH +"/api/v1/user/current-session",
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
