@@ -130,3 +130,21 @@ table .loading-data {
 .table-custom tbody tr:last-child td:last-child {
     border-bottom-right-radius: 10px;
 }
+
+.table-motion-company{
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    transform: scale(0);
+    transition: transform 1.8s ease-out, opacity 0.5s ease-out;
+}
+
+.table-motion-report{
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    transform: scale(0);
+    transition: transform 1.8s ease-out, opacity 0.5s ease-out;
+}

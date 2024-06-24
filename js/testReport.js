@@ -3,7 +3,7 @@ function getReports() {
   var reportsHTML = `
         <h1 class="mt-2">TEST REPORTS</h1>
         <hr>
-        <table class="table table-striped table-custom mt-2">
+        <table class="table table-striped table-custom  mt-2">
           <thead class="th-1">
             <tr>
               <th scope="col-1" class="bg-success text-center align-middle text-white" style="height: 54px">Company Name</th>
@@ -37,6 +37,7 @@ function loadTestTable() {
     success: function (data) {
       console.log(data);
       loadTestTableData(data)
+      $("#LoadingModel2").modal("hide");
     },
     error: function (xhr, error) {
     },

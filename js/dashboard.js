@@ -2,7 +2,8 @@ var ContextPath = location.protocol + "//" + location.host;
 
 
 $(document).ready(function () {
-  $("#dashboard-container").html("please Waite");
+  $("#LoadingModel2").modal("show");
+  setuserName();
   dashboardBody();
   loadTable();
   setChartData();
@@ -23,17 +24,26 @@ const redirect = async () => {
 
 function loadContent(data) {
   if (data == "home") {
+    $("#LoadingModel2").modal("show");
     dashboardBody();
     loadTable();
     setChartData();
     BtnInitialise();
   } else if (data == "profile") {
+    $("#LoadingModel2").modal("show");
     GetProfile();
+    setuserData();
   } else if (data == "Companies") {
     getCompanies();
+    $('.table-custom').css({
+      transform: 'scale(1)',
+    });
     loadCompanyTable()
   } else if (data == "Report") {
     getReports();
+    $('.table-custom').css({
+      transform: 'scale(1)',
+    });
     loadTestTable()
   } else if (data == "logout") {
   }
@@ -152,6 +162,7 @@ function loadTable() {
     success: function (data) {
       console.log(data);
       appendTableData(data)
+      $("#LoadingModel2").modal("hide");
     },
     error: function (xhr, error) {
     },
@@ -187,6 +198,10 @@ function setChartData() {
     },
   });
 }
+
+
+
+
 
 function appendTableData(data) {
   $("#table-body").html(" ");

@@ -139,7 +139,8 @@ if (!this.Registraion) {
       var clickedRow = $(this).closest("tr");
       // Extract the data-id from the table row
       var dataId = clickedRow.data("id");
-      deleteRow2(dataId);
+      deleteCheklist()
+      // deleteRow2(dataId);
       loadTable();
     });
 
@@ -149,7 +150,15 @@ if (!this.Registraion) {
       // Access the clicked button's parent table row
       var $clickedRow = $(this).closest("tr");
       // Extract the data-id from the table row
-      deleteRow1($clickedRow);
+      deleteCheklistitem($clickedRow)
+      // deleteRow1($clickedRow);
+    });
+
+    $("#checklistcollapse").on("click", ".delete-cart-item", function (event) {
+      // Access the clicked button's parent table row
+      var $clickedRow = $(this).closest("tr");
+      // Extract the data-id from the table row
+      deleteCartitem($clickedRow);
     });
 
 
@@ -444,7 +453,7 @@ if (!this.Registraion) {
 
     $.each(value.checkListItemDTO, function (itemIndex, item) {
       checklistContent2 +=
-        '<tr><td class="col-3">' +
+        '<tr id='+item.id+'><td class="col-3">' +
         item.checklistItemName +
         '</td><td class="col-3">' +
         item.value +
@@ -452,7 +461,7 @@ if (!this.Registraion) {
         item.priorityLevel +
         "</td>" +
         '<td class="col-3 actions"><div class="cd-center actions">' +
-        '<button class="btn btn-danger m-2 actions">Delete</button></div>' +
+        '<button class="btn btn-danger m-2 delete-cart-item actions">Delete</button></div>' +
         "</td></tr>";
     });
 
@@ -748,76 +757,48 @@ if (!this.Registraion) {
 
 
 
+  function deleteCheklist($row) {
+    var hrefId = $row.closest(".collapse").attr("id");
+    $.ajax({
+      method: "DELETE",
+      url: ContextPath + ":8081" + "/api/check-lists/" + hrefId,
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(checkListItemUpdateDTO),
+      success: function (data) {
+        getAllDataFromServer();
+      },
+      error: function (xhr, error) {
 
+      },
+    });
+  }
 
-  function deleteRow1($clickedRow) {
-    var hrefId = $clickedRow.closest(".collapse").attr("id");;
-    let checklistData1 = [];
-    checklistData1 =
-      JSON.parse(localStorage.getItem("ChecklistDataList")) || [];
+  function deleteCheklistitem($row) {
+    var hrefId = $row.closest(".collapse").attr("id");
 
-    let itemIndex1 = checklistData1.findIndex((item) => item.id === hrefId);
-    var itemdata = checklistData1.find((item) => item.id === hrefId);
-
-    $clickedRow.find("td").each(function () {
+    $row.find("td").each(function () {
       checkListItemDTO.id = $clickedRow.data("id");
     });
 
     console.log("item.Id", checkListItemDTO.id)
 
-
-    if (itemIndex1 !== -1) {
-      let itemIndex2 = itemdata.checkListItemDTO.findIndex((item) => item.id === checkListItemDTO.id);
-      itemdata.checkListItemDTO.splice(itemIndex2, 1);
-      checklistData1[itemIndex1] = itemdata;
-      localStorage.setItem("ChecklistDataList", JSON.stringify(checklistData1));
-
-      $("#cotbody").html(" ");
-      var tbody = "";
-      var checklistContent2 = " ";
-      checklistContent2 = loadCollpase(itemdata.checkListItemDTO, checklistContent2);
-      tbody += checklistContent2;
-      $("#cotbody").append(tbody);
-    }
-  }
-
-
-
-
-
-
-
-
-
-  function getToken(data) {
-    loginModel.login = data.login;
-    loginModel.password = data.password;
     $.ajax({
-      method: "POST",
-      url: "http://localhost:8081/api/v1/auth/authenticate",
+      method: "DELETE",
+      url: ContextPath + ":8081" + "api/check-list-items" + checkListItemDTO.id,
       contentType: "application/json; charset=utf-8",
-      data: JSON.stringify(loginModel),
-      success: function (data) {
-        localStorage.setItem("token", data.token);
-        // onSaveSuccess(data);
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Signed in successfully",
-        });
-        sample();
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
       },
-      error: function (xhr, error) { },
+      data: JSON.stringify(checkListItemUpdateDTO),
+      success: function (data) {
+        getAllDataFromServer();
+      },
+      error: function (xhr, error) {
+
+      },
     });
   }
 
@@ -825,11 +806,127 @@ if (!this.Registraion) {
 
 
 
+  function deleteCartitem($clickedRow) {
+    var hrefId = $clickedRow.attr("id");
+    let checklistData1 = [];
+    checklistData1 = JSON.parse(localStorage.getItem("checklistData")) || [];
+    console.log("item", checklistData1)
+    let itemIndex1 = checklistData1[0].checkListItemDTO.findIndex((item) => item.id === hrefId);
+    console.log("item.Index", itemIndex1)
+    var itemdata = checklistData1[0].checkListItemDTO;
+    console.log("delete Berfore", itemdata)
+    itemdata.splice(itemIndex1, 1);
+    console.log("After", itemdata)
+    checklistData1[0].checkListItemDTO = itemdata;
+
+    console.log("final", checklistData1)
+
+    // if (itemIndex1 !== -1) {
+    //   let itemIndex2 = itemdata.checkListItemDTO.findIndex((item) => item.id === checkListItemDTO.id);
+    //   itemdata.checkListItemDTO.splice(itemIndex2, 1);
+      
+      localStorage.setItem("checklistData", JSON.stringify(checklistData1));
+      let Data1 = [];
+      Data1 = JSON.parse(localStorage.getItem("checklistData")) || [];
+      $("#checklistcollapse").html(" ");
+      var tbody = "";
+      var checklistContent2 = " ";
+      checklistContent2 = loadCollpase(Data1[0].checkListItemDTO, checklistContent2);
+      tbody += checklistContent2;
+      $("#checklistcollapse").append(tbody);
+    // }
+  }
+
+
+
+  function deleteCheklistitem($row) {
+    var hrefId = $row.closest(".collapse").attr("id");
+
+    $row.find("td").each(function () {
+      checkListItemDTO.id = $clickedRow.data("id");
+    });
+
+    console.log("item.Id", checkListItemDTO.id)
+
+    $.ajax({
+      method: "DELETE",
+      url: ContextPath + ":8081" + "api/check-list-items" + checkListItemDTO.id,
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(checkListItemUpdateDTO),
+      success: function (data) {
+        getAllDataFromServer();
+      },
+      error: function (xhr, error) {
+
+      },
+    });
+  }
+
+  function deleteCheklistitem($row) {
+    var hrefId = $row.closest(".collapse").attr("id");
+
+    $row.find("td").each(function () {
+      checkListItemDTO.id = $clickedRow.data("id");
+    });
+
+    console.log("item.Id", checkListItemDTO.id)
+
+    $.ajax({
+      method: "DELETE",
+      url: ContextPath + ":8081" + "api/check-list-items" + checkListItemDTO.id,
+      contentType: "application/json; charset=utf-8",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+      },
+      data: JSON.stringify(checkListItemUpdateDTO),
+      success: function (data) {
+        getAllDataFromServer();
+      },
+      error: function (xhr, error) {
+
+      },
+    });
+  }
+
+
+  // function getToken(data) {
+  //   loginModel.login = data.login;
+  //   loginModel.password = data.password;
+  //   $.ajax({
+  //     method: "POST",
+  //     url: "http://localhost:8081/api/v1/auth/authenticate",
+  //     contentType: "application/json; charset=utf-8",
+  //     data: JSON.stringify(loginModel),
+  //     success: function (data) {
+  //       localStorage.setItem("token", data.token);
+  //       // onSaveSuccess(data);
+  //       const Toast = Swal.mixin({
+  //         toast: true,
+  //         position: "top-end",
+  //         showConfirmButton: false,
+  //         timer: 3000,
+  //         timerProgressBar: true,
+  //         didOpen: (toast) => {
+  //           toast.onmouseenter = Swal.stopTimer;
+  //           toast.onmouseleave = Swal.resumeTimer;
+  //         },
+  //       });
+  //       Toast.fire({
+  //         icon: "success",
+  //         title: "Signed in successfully",
+  //       });
+  //       sample();
+  //     },
+  //     error: function (xhr, error) { },
+  //   });
+  // }
+
   const delay = (delayInms) => {
     return new Promise((resolve) => setTimeout(resolve, delayInms));
   };
-
-
 
 
   const sample = async () => {

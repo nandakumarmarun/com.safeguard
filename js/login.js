@@ -9,7 +9,7 @@ if (!this.Form) {
 
   var ContextPath =
     location.protocol + "//" + location.host;
-  
+
   var createEditForm = $("#loginForm");
   var deleteForm = $("#deleteForm");
 
@@ -72,14 +72,14 @@ if (!this.Form) {
 
 
   function createUpdateForm() {
-		loginModel.login = $('#form-name').val();
-		loginModel.password = $('#form-password').val();
-		$.ajax({
-			method : 'POST',
-			url : ContextPath + ":8081/api/v1/auth/authenticate",
-			contentType : "application/json; charset=utf-8",
-			data : JSON.stringify(loginModel),
-			success : function(data) {
+    loginModel.login = $('#form-name').val();
+    loginModel.password = $('#form-password').val();
+    $.ajax({
+      method: 'POST',
+      url: ContextPath + ":8081/api/v1/auth/authenticate",
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(loginModel),
+      success: function (data) {
         localStorage.setItem('token', data.token);
         const Toast = Swal.mixin({
           toast: true,
@@ -96,17 +96,17 @@ if (!this.Form) {
           icon: "success",
           title: "Signed in successfully"
         });
-        sample();
-			},
-			error : function(xhr, error) {
-				Swal.fire({
+        setuserName();
+      },
+      error: function (xhr, error) {
+        Swal.fire({
           icon: "error",
           title: "Oops...",
           text: "Check Your Credentials!",
         });
-			}
-		});
-	}
+      }
+    });
+  }
 
   const delay = (delayInms) => {
     return new Promise(resolve => setTimeout(resolve, delayInms));
@@ -117,24 +117,33 @@ if (!this.Form) {
     location.href = ContextPath + "/HTML/dashboard"
   };
 
+  const adminPage = async () => {
+    let delayres = await delay(2000);
+    location.href = ContextPath + "/HTML/checklist"
+  };
 
-
-
-  function getCurrentSession() {
-    $("#tbody-comapany").html(loading);
+  function setuserName() {
     $.ajax({
       method: "GET",
-      url: ContextPath + ":8081" + "api/v1/user/current-session",
+      url: ContextPath + ":8081" + "/api/v1/user/current-session",
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
       },
       success: function (data) {
+        if (data.roles == "USER") {
+          sample();
+        } else {
+          adminPage();
+        }
       },
       error: function (xhr, error) {
       },
     });
   }
+
+
+
 
 
 

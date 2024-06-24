@@ -3,7 +3,7 @@ function getCompanies() {
   var companiesReport = `
         <h1 class="mt-2">Companies</h1>
         <hr>
-        <table class="table table-striped table-custom mt-2">
+        <table class="table table-striped table-custom  table-motion-company mt-2">
           <thead>
             <tr>
               <th class="bg-success text-center align-middle text-white" style="height: 54px">Name</th>
