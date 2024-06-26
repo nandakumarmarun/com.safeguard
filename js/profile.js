@@ -1,3 +1,14 @@
+
+$.getJSON("../config.json", function (config) {
+  ContextPath = config.HOST;
+  API_PATH = ContextPath + ":" + config.PORT;
+  console.log("properties");
+  console.log("HOST:", config.HOST);
+});
+
+
+
+
 function GetProfile() {
   $("#dashboard-container").html("");
   var formHTML = `
@@ -47,9 +58,10 @@ function GetProfile() {
 }
 
 function setuserData() {
+  console.log(API_PATH)
   $.ajax({
     method: "GET",
-    url: ContextPath + ":8081" + "/api/v1/user/current-session",
+    url: API_PATH + "/api/v1/user/current-session",
     contentType: "application/json; charset=utf-8",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
@@ -67,9 +79,10 @@ function setuserData() {
 }
 
 function setuserName() {
+  console.log(API_PATH)
   $.ajax({
     method: "GET",
-    url: ContextPath + ":8081" + "/api/v1/user/current-session",
+    url: API_PATH + "/api/v1/user/current-session",
     contentType: "application/json; charset=utf-8",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here

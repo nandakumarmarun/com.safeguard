@@ -10,6 +10,18 @@ if (!this.Registraion) {
   var formContextPath =
     location.protocol + "//" + location.host + location.pathname;
 
+
+  var ContextPath = "";
+  var API_PATH = "";
+
+  $.getJSON("../config.json", function (config) {
+    ContextPath = config.HOST;
+    API_PATH = ContextPath + ":" + config.PORT;
+    console.log("properties");
+    console.log("HOST:", config.HOST);
+  });
+
+
   var createEditForm = $("#regForm");
   var deleteForm = $("#deleteForm");
 
@@ -84,6 +96,9 @@ if (!this.Registraion) {
     });
   });
 
+
+
+
   function createUpdateForm() {
     console.log("hello")
     registrationModel.firstName = $("#inputfirstname").val();
@@ -144,24 +159,20 @@ if (!this.Registraion) {
     });
   }
 
+
+
   const delay = (delayInms) => {
     return new Promise(resolve => setTimeout(resolve, delayInms));
   };
 
+  
   const sample = async () => {
     let delayres = await delay(3000);
     location.href = "http://localhost:80/HTML/new"
   };
 
-  // function onSaveSuccess(result) {
-  //   // reloading page to see the updated data
-  //   window.location = formContextPath;
-  // }
 
-  function onDeleteSuccess(result) {
-    // reloading page to see the updated data
-    window.location = formContextPath;
-  }
+  
 
   Registraion.showModalPopup = function (el, id, action, obj) {
     resetForm();
@@ -185,9 +196,13 @@ if (!this.Registraion) {
     el.modal("show");
   };
 
+
+
   Registraion.closeModalPopup = function (el) {
     el.modal("hide");
   };
+
+
 
   function resetForm() {
     $(".alert").hide();
@@ -197,69 +212,7 @@ if (!this.Registraion) {
     formModel.pid = null; // reset form model;
   }
 
-  function addErrorAlert(message, key, data) {
-    $(".alert > p").html(message);
-    $(".alert").show();
-  }
+ 
 
-  function onError(httpResponse, exception) {
-    var i;
-    switch (httpResponse.status) {
-      // connection refused, server not reachable
-      case 0:
-        addErrorAlert("Server not reachable", "error.server.not.reachable");
-        break;
-      case 400:
-        var errorHeader = httpResponse.getResponseHeader(
-          "X-orderfleetwebApp-error"
-        );
-        var entityKey = httpResponse.getResponseHeader(
-          "X-orderfleetwebApp-params"
-        );
-        if (errorHeader) {
-          var entityName = entityKey;
-          addErrorAlert(errorHeader, errorHeader, {
-            entityName: entityName,
-          });
-        } else if (httpResponse.responseText) {
-          var data = JSON.parse(httpResponse.responseText);
-          if (data && data.fieldErrors) {
-            for (i = 0; i < data.fieldErrors.length; i++) {
-              var fieldError = data.fieldErrors[i];
-              var convertedField = fieldError.field.replace(/\[\d*\]/g, "[]");
-              var fieldName =
-                convertedField.charAt(0).toUpperCase() +
-                convertedField.slice(1);
-              addErrorAlert(
-                "Field " + fieldName + " cannot be empty",
-                "error." + fieldError.message,
-                {
-                  fieldName: fieldName,
-                }
-              );
-            }
-          } else if (data && data.message) {
-            addErrorAlert(data.message, data.message, data);
-          } else {
-            addErrorAlert(data);
-          }
-        } else {
-          addErrorAlert(exception);
-        }
-        break;
-      default:
-        if (httpResponse.responseText) {
-          var data = JSON.parse(httpResponse.responseText);
-          if (data && data.description) {
-            addErrorAlert(data.description);
-          } else if (data && data.message) {
-            addErrorAlert(data.message);
-          } else {
-            addErrorAlert(data);
-          }
-        } else {
-          addErrorAlert(exception);
-        }
-    }
-  }
+  
 })();

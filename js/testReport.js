@@ -12,6 +12,7 @@ function getReports() {
               <th scope="col-1" class="bg-success text-center align-middle text-white" style="height: 54px">Security Level</th>
               <th scope="col-1" class="bg-success text-center align-middle text-white" style="height: 54px">Score</th>
               <th scope="col-1" class="bg-success text-center align-middle text-white" style="height: 54px">Status</th>
+              <th scope="col-1" class="bg-success text-center align-middle text-white" style="height: 54px">Actions</th>
             </tr>
           </thead>
           <tbody id="tbody-test">
@@ -25,11 +26,11 @@ function getReports() {
 
 function loadTestTable() {
   var image = '<img src="../assets/loading/loading--unscreen.gif"" style="width: 200px; height: 200px;" alt="">';
-  var loading = '<tr><td colspan="6" align="center">' + image + '</td></tr>';
+  var loading = '<tr><td colspan="7" align="center">' + image + '</td></tr>';
   $("#tbody-test").html(loading);
   $.ajax({
     method: "GET",
-    url: ContextPath + ":8081" + "/api/security-tests/ALL",
+    url: API_PATH + "/api/test",
     contentType: "application/json; charset=utf-8",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
@@ -38,6 +39,7 @@ function loadTestTable() {
       console.log(data);
       loadTestTableData(data)
       $("#LoadingModel2").modal("hide");
+      BtnInitialise();
     },
     error: function (xhr, error) {
     },
@@ -63,12 +65,36 @@ function loadTestTableData(data) {
       + element.testScore
       + '</td><td Class="text-center align-middle">'
       + element.testStatus
+      + '</td><td class="text-center align-middle"><button id="btnView" type="button" class="btn btn-primary view-details-btn" data-id="'
+      + element.id // Assuming element.id is the unique identifier for each row
+      + '">'
+      + 'View Details</button>'
       + '</td><tr>'
 
     tBody += table
   });
   $("#tbody-test").append(tBody);
 }
+
+
+function getSavedTestData(testId) {
+  $.ajax({
+    method: "GET",
+    url: API_PATH + "/api/test/" + testId,
+    contentType: "application/json; charset=utf-8",
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("token")
+    },
+    success: function (data) {
+
+    },
+    error: function (xhr, error) {
+      console.error("Failed to fetch saved test data:", error);
+    },
+  });
+}
+
+
 
 
 

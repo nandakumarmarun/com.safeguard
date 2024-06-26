@@ -16,7 +16,7 @@ if (!this.Form) {
     $.getJSON("../config.json", function (config) {
       ContextPath = config.HOST;
       Port =  config.PORT;
-      API_PATH = ContextPath + ":" +config.PORT
+      API_PATH = ContextPath + ":" + config.PORT
       console.log("properties");
       console.log("HOST:", config.HOST);
     });

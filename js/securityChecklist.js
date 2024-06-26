@@ -7,11 +7,35 @@ if (!this.Registraion) {
 (function () {
   "use strict";
 
-  var ContextPath =
-    location.protocol + "//" + location.host;
+  var ContextPath = "";
+  var API_PATH = "";
+  var PORT = ""
 
+  function loadConfig() {
+    return new Promise((resolve, reject) => {
+      $.getJSON("../config.json", function (config) {
+        if (config.HOST && config.PORT) {
+          ContextPath = config.HOST;
+          PORT = config.PORT;
+          API_PATH = ContextPath + ":" + PORT;
+          console.log("properties " + API_PATH);
+          console.log("HOST:", config.HOST);
+          resolve();
+        } else {
+          console.error("Error: HOST or PORT not found in config.json");
+          reject("Invalid config");
+        }
+      }).fail(function (jqxhr, textStatus, error) {
+        var err = textStatus + ", " + error;
+        console.error("Request Failed: " + err);
+        reject(err);
+      });
+    });
+  }
   var createEditForm = $("#regForm");
   var deleteForm = $("#deleteForm");
+
+
 
   const SecurityTestCreateDTO = {
     applicationName: null,
@@ -24,6 +48,8 @@ if (!this.Registraion) {
     userId: null,
     companyId: null
   };
+
+
 
   const SecurityTestUpdateDTO = {
     id: null,
@@ -38,21 +64,29 @@ if (!this.Registraion) {
     companyId: null
   };
 
+
+
   var testCheckLists = {
     marked: false,
     testCheckListItems: []
   }
+
+
 
   var testCheckListItems = {
     marked: false,
     checklistitemId: null
   }
 
+
+
   var CompanyCreateDTO = {
     companyName: null,
     address: null,
     contact: null
   }
+
+
 
   // Specify the validation rules
   var validationRules = {
@@ -74,6 +108,8 @@ if (!this.Registraion) {
     },
   };
 
+
+
   // Specify the validation error messages
   var validationMessages = {
     login: {
@@ -86,73 +122,55 @@ if (!this.Registraion) {
     },
   };
 
+
+
+
   $(document).ready(function () {
-    $("#LoadingModel2").modal("show");
-    getAllDataFromServer();
-    // disableBackButton();
+    loadConfig().then(() => {
+      $("#LoadingModel2").modal("show");
+      getAllDataFromServer();
+      // disableBackButton();
+      $("#multiStepForm").submit(function (event) {
+        event.preventDefault();
+        $("#LoadingModel").modal("show");
+        if (SecurityTestUpdateDTO.id == null) {
+          SUbmitTest();
+        } else {
+          UpdateTest();
+        }
 
-
-
-    $("#multiStepForm").submit(function (event) {
-      event.preventDefault();
-      $("#LoadingModel").modal("show");
-      if (SecurityTestUpdateDTO.id == null) {
-        SUbmitTest();
-      }else{
-        UpdateTest();
-      }
-
+      });
+      saveAlert();
+    }).catch((error) => {
+      console.error("Initialization failed: ", error);
     });
 
 
 
 
+
+  });
+
+
+  function saveAlert() {
     window.addEventListener("beforeunload", function (e) {
       // Custom message for the popup
       var confirmationMessage = "Are you sure you want to leave? Your data will be saved.";
 
       // Save data to the server
-      this.alert(confirmationMessage)
+      this.alert(confirmationMessage);
 
       // Show the popup
       e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-      return confirmationMessage; // Gecko, WebKit, Chrome <34
+      return confirmationMessage;
     });
-  });
+  }
 
-
-
-  // function disableBackButton() {
-  //   window.history.pushState(null, "", window.location.href);
-  //   $(window).on('popstate', function () {
-  //     window.history.pushState(null, "", window.location.href);
-  //   });
-  // }
-
-
-  // function getAllDataFromServer() {
-  //   $("#LoadingModel").modal("hide");
-  //   $.ajax({
-  //     method: "GET",
-  //     url: ContextPath + ":8081" + "/api/check-lists",
-  //     contentType: "application/json; charset=utf-8",
-  //     headers: {
-  //       "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
-  //     },
-  //     success: function (data) {
-  //       loadQuetions(data);
-  //       intializeButtons();
-  //       loadCompanies();
-  //     },
-  //     error: function (xhr, error) {
-  //     },
-  //   });
-  // }
 
   function getAllDataFromServer() {
     $.ajax({
       method: "GET",
-      url: ContextPath + ":8081" + "/api/check-lists",
+      url: API_PATH + "/api/check-lists",
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
@@ -168,11 +186,13 @@ if (!this.Registraion) {
   }
 
 
+
+
   function loadCompanies() {
     $('#priority').html('');
     $.ajax({
       method: "GET",
-      url: ContextPath + ":8081" + "/api/companies",
+      url: API_PATH + "/api/companies",
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
@@ -188,13 +208,16 @@ if (!this.Registraion) {
   }
 
 
+
+
+
   function CreateCompanies() {
     CompanyCreateDTO.companyName = $("#checklistitemNameModel").val();
     CompanyCreateDTO.address = $("#systemNo").val();
     CompanyCreateDTO.contact = $("#projectName").val();
     $.ajax({
       method: "POST",
-      url: ContextPath + ":8081" + "/api/companies",
+      url: API_PATH + "/api/companies",
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
@@ -208,6 +231,10 @@ if (!this.Registraion) {
       },
     });
   }
+
+
+
+
 
 
   function SUbmitTest() {
@@ -244,7 +271,7 @@ if (!this.Registraion) {
 
     $.ajax({
       method: "POST",
-      url: ContextPath + ":8081" + "/api/security-tests",
+      url: API_PATH + "/api/test",
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
@@ -267,6 +294,9 @@ if (!this.Registraion) {
   }
 
 
+
+
+
   function UpdateTest() {
     SecurityTestUpdateDTO.applicationName = $('#projectName').val();
     SecurityTestUpdateDTO.systemNo = parseInt($('#systemNo').val());
@@ -287,10 +317,10 @@ if (!this.Registraion) {
       }
 
       checkLists[checkListId].push({
-        id:testCheckListItemId,
+        id: testCheckListItemId,
         marked: isChecked,
         checklistitemId: checkListItemId,
-        testCheckListId:testCheckListId
+        testCheckListId: testCheckListId
       });
     });
 
@@ -307,7 +337,7 @@ if (!this.Registraion) {
 
     $.ajax({
       method: "PUT",
-      url: ContextPath + ":8081" + "/api/security-tests/"+SecurityTestUpdateDTO.id,
+      url: API_PATH + "/api/test/" + SecurityTestUpdateDTO.id,
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
@@ -327,8 +357,6 @@ if (!this.Registraion) {
       },
     });
   }
-
-
 
 
 
@@ -395,10 +423,12 @@ if (!this.Registraion) {
     });
   }
 
+
+
   function getSavedTestData(testId) {
     $.ajax({
       method: "GET",
-      url: ContextPath + ":8081" + "/api/security-tests/" + testId,
+      url: API_PATH + "/api/test/" + testId,
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -412,10 +442,13 @@ if (!this.Registraion) {
     });
   }
 
+
+
+
   function updateStatus(testId) {
     $.ajax({
       method: "PUT",
-      url: ContextPath + ":8081" + "/api/security-tests/update-status/" + testId,
+      url: API_PATH + "/api/dashboard/update-status/" + testId,
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -428,6 +461,11 @@ if (!this.Registraion) {
       },
     });
   }
+
+
+  const redirect = async () => {
+    location.href = ContextPath + "/HTML/dashboard"
+  };
 
 
   function populateForm(data) {
@@ -454,6 +492,10 @@ if (!this.Registraion) {
     SecurityTestUpdateDTO.id = data.id
   }
 
+
+
+
+
   function reset() {
     $('.form-check-input').prop('checked', false);
     $('#projectName').val("");
@@ -465,25 +507,12 @@ if (!this.Registraion) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   function loadQuetions(data) {
     $("#LoadingModel2").modal("hide");
     let checklist2 = [];
     checklist2 = data
     var tabody = ""
     var sideBarItems = ""
-
 
     tabody += `<div class="step step-0 active">
         <div class="div">
@@ -573,9 +602,15 @@ if (!this.Registraion) {
     $("#sidebar-inner").append(sideBarItems);
   }
 
-  const redirect = async () => {
-    location.href = ContextPath + "/HTML/dashboard"
-  };
+
+
+
+  // const redirect = async () => {
+  //   location.href = ContextPath + "/HTML/dashboard"
+  // };
+
+
+
 
   const delay = (delayInms) => {
     return new Promise(resolve => setTimeout(resolve, delayInms));
@@ -614,17 +649,6 @@ if (!this.Registraion) {
     }
   }
 
-  // function onSaveSuccess(result) {
-  //   // reloading page to see the updated data
-  //   window.location = formContextPath;
-  // }
-
-  // function onDeleteSuccess(result) {
-  //   // reloading page to see the updated data
-  //   window.location = formContextPath;
-  // }
-
-
 
 
 
@@ -636,10 +660,17 @@ if (!this.Registraion) {
     formModel.pid = null; // reset form model;
   }
 
+
+
+
   function addErrorAlert(message, key, data) {
     $(".alert > p").html(message);
     $(".alert").show();
   }
+
+
+
+
 
   function onError(httpResponse, exception) {
     var i;

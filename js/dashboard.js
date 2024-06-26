@@ -1,20 +1,60 @@
-var ContextPath = location.protocol + "//" + location.host;
+var ContextPath = "";
+var API_PATH = "";
+var PORT = ""
+
+$.getJSON("../config.json", async function (config) {
+  ContextPath = config.HOST;
+  PORT = config.PORT
+  API_PATH = ContextPath + ":" + PORT;
+  console.log("properties" + API_PATH);
+  console.log("HOST:", config.HOST);
+});
+
+
+function loadConfig() {
+  return new Promise((resolve, reject) => {
+    $.getJSON("../config.json", function (config) {
+      if (config.HOST && config.PORT) {
+        ContextPath = config.HOST;
+        PORT = config.PORT;
+        API_PATH = ContextPath + ":" + PORT;
+        console.log("properties " + API_PATH);
+        console.log("HOST:", config.HOST);
+        resolve();
+      } else {
+        console.error("Error: HOST or PORT not found in config.json");
+        reject("Invalid config");
+      }
+    }).fail(function (jqxhr, textStatus, error) {
+      var err = textStatus + ", " + error;
+      console.error("Request Failed: " + err);
+      reject(err);
+    });
+  });
+}
+
 
 
 $(document).ready(function () {
-  $("#LoadingModel2").modal("show");
-  setuserName();
-  dashboardBody();
-  loadTable();
-  setChartData();
-  BtnInitialise();
-  $(".nav-link").click(function () {
-    $(".nav-link").removeClass("active");
-    $(this).addClass("active");
-    let content = $(this).data("content");
-    loadContent(content);
+  loadConfig().then(() => {
+    $("#LoadingModel2").modal("show");
+
+    setuserName();
+    dashboardBody();
+    loadTable();
+    setChartData();
+    BtnInitialise();
+    $(".nav-link").click(function () {
+      $(".nav-link").removeClass("active");
+      $(this).addClass("active");
+      let content = $(this).data("content");
+      loadContent(content);
+    });
+  }).catch((error) => {
+    console.error("Initialization failed: ", error);
   });
 });
+
 
 
 const redirect = async () => {
@@ -45,6 +85,7 @@ function loadContent(data) {
       transform: 'scale(1)',
     });
     loadTestTable()
+    
   } else if (data == "logout") {
   }
 }
@@ -103,6 +144,13 @@ function BtnInitialise() {
     $("#LoadingModel").modal("show");
     redirect();
   });
+
+  $("#btnView").click(function () {
+    $("#LoadingModel").modal("show");
+    var id = $(this).data("id");
+    getSavedTestData(id)
+    
+  });
 }
 
 
@@ -154,7 +202,7 @@ function loadTable() {
   $("#table-body").html(loading);
   $.ajax({
     method: "GET",
-    url: ContextPath + ":8081" + "/api/security-tests/10",
+    url: API_PATH + "/api/dashboard/topten",
     contentType: "application/json; charset=utf-8",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
@@ -173,7 +221,7 @@ function loadTable() {
 function setChartData() {
   $.ajax({
     method: "GET",
-    url: ContextPath + ":8081" + "/api/security-tests/chart",
+    url: API_PATH + "/api/dashboard/chart",
     contentType: "application/json; charset=utf-8",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here

@@ -27,7 +27,7 @@ function loadCompanyTable() {
   $("#tbody-comapany").html(loading);
   $.ajax({
     method: "GET",
-    url: ContextPath + ":8081" + "/api/companies",
+    url: API_PATH + "/api/companies",
     contentType: "application/json; charset=utf-8",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here

@@ -79,6 +79,26 @@
   </div>
 
 
+  <div class="modal fade " id="ViewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -90,11 +110,24 @@
 
   <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
   <script type="text/javascript" src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"></script>
+
+  <script>
+    var ContextPath = "";
+    var API_PATH = "";
+
+    $.getJSON("../config.json", function (config) {
+      ContextPath = config.HOST;
+      port = config.PORT
+      API_PATH = ContextPath + ":" + port;
+      console.log("properties" + port);
+      console.log("HOST:", config.HOST);
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../js/dashboard.js"></script>
   <script src="../js/companies.js"></script>
   <script src="../js/testReport.js"></script>
   <script src="../js/profile.js"></script>
-  <script src="../js/dashboard.js"></script>
 </body>
 
 </html>
