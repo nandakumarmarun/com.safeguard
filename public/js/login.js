@@ -11,15 +11,17 @@ if (!this.Form) {
   var Port = "";
   var API_PATH = "";
 
-    // location.protocol + "//" + location.host;
+  var path = location.protocol + "//" + location.host;
 
-    $.getJSON("../config.json", function (config) {
-      ContextPath = config.HOST;
-      Port =  config.PORT;
-      API_PATH = ContextPath + ":" + config.PORT
-      console.log("properties");
-      console.log("HOST:", config.HOST);
-    });
+  // location.protocol + "//" + location.host;
+
+  $.getJSON("../config.json", function (config) {
+    ContextPath = config.HOST;
+    Port = config.PORT;
+    API_PATH = ContextPath + ":" + config.PORT
+    console.log("properties");
+    console.log("HOST:", config.HOST);
+  });
 
   var createEditForm = $("#loginForm");
   var deleteForm = $("#deleteForm");
@@ -55,6 +57,11 @@ if (!this.Form) {
   };
 
   $(document).ready(function () {
+
+    $('#regpage').click(function (e) {
+      regPage();
+    });
+
     // add the rule here
     $.validator.addMethod(
       "valueNotEquals",
@@ -123,20 +130,24 @@ if (!this.Form) {
     return new Promise(resolve => setTimeout(resolve, delayInms));
   };
 
+  const regPage = async () => {
+    location.href = path + "/HTML/registraiton.html"
+  };
+
   const sample = async () => {
     let delayres = await delay(2000);
-    location.href = ContextPath  + "/HTML/dashboard"
+    location.href = path + "/HTML/dashboard.html"
   };
 
   const adminPage = async () => {
     let delayres = await delay(2000);
-    location.href = ContextPath + "/HTML/checklist"
+    location.href = path + "/HTML/checklist.html"
   };
 
   function setuserName() {
     $.ajax({
       method: "GET",
-      url: API_PATH +"/api/v1/user/current-session",
+      url: API_PATH + "/api/v1/user/current-session",
       contentType: "application/json; charset=utf-8",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
