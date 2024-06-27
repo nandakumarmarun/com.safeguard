@@ -130,26 +130,6 @@
         transform: 'scale(1)',
         opacity: '1'
       });
-
-      data.testCheckListResponseDTOS.forEach(function(checklist) {
-                var checklistContainer = '<div class="check-list-container p-2 m-2 bg-light shadow-lg rounded">' +
-                    '<div class="check-list-item-container">' +
-                    '<h3 class="p-2 m-2">' + checklist.checklistName + '</h3>';
-
-                checklist.testCheckListItemResoponseDTOS.forEach(function(item) {
-                    checklistContainer += 
-                        '<div class="form-check fs-6 mt-3">' +
-                        '<input class="form-check-input" type="checkbox" ' + (item.marked ? 'checked' : '') + ' value="' + item.id + '" id="flexCheckChecked-' + item.id + '" data-checklistitemid="' + item.id + '" data-checklistid="' + checklist.checkListId + '">' +
-                        '<label class="form-check-label ' + item.priorityLevel.toLowerCase() + '" for="flexCheckChecked-' + item.id + '">' + item.checklistItemName + '</label>' +
-                        '</div>';
-                });
-
-                checklistContainer += '</div></div>';
-
-                $('#checklist').append(checklistContainer);
-            });
-
-
     });
   </script>
 </body>

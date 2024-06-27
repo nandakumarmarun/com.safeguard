@@ -145,10 +145,10 @@ function BtnInitialise() {
     redirect();
   });
 
-  $("#btnView").click(function () {
+  $(".view-details-btn").click(function () {
     var id = $(this).data("id");
     getSavedTestData(id)
-    $("#ViewModal").modal("show");
+    $("#LoadingModel2").modal("show");
   });
 }
 

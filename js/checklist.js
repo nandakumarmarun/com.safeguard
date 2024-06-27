@@ -60,6 +60,11 @@ if (!this.Registraion) {
     checklistName: null,
   };
 
+  var MultiCheckListItemCreateDTO = {
+    checkListId: null,
+    checkListItemCreateDTO: [],
+  };
+
   var CheckListItemCreateDTO = {
     checklistItemName: null,
     value: null,
@@ -110,79 +115,93 @@ if (!this.Registraion) {
   };
 
   $(document).ready(function () {
-    loadConfig().then(() => {
-      console.log(API_PATH);
-      checklistBtnChange();
-      checkListItemBtnChange();
-      checklistItemEditEventListner();
-      checkListAddBtnEventListener();
-      $("#checklistTable").on("click", ".delete1", function (event) {
-        // Access the clicked button's parent table row
-        var clickedRow = $(this).closest("tr");
-        // Extract the data-id from the table row
-        var dataId = clickedRow.data("id");
-        deleteCheklist(dataId);
-        getAllDataFromServer();
-        // deleteRow2(dataId);
+    loadConfig()
+      .then(() => {
+        console.log(API_PATH);
+        checklistBtnChange();
+        checkListItemBtnChange();
+        checklistItemEditEventListner();
+        checkListAddBtnEventListener();
+        $("#checklistTable").on("click", ".delete1", function (event) {
+          // Access the clicked button's parent table row
+          var clickedRow = $(this).closest("tr");
+          // Extract the data-id from the table row
+          var dataId = clickedRow.data("id");
+          deleteCheklist(dataId);
+          getAllDataFromServer();
+          // deleteRow2(dataId);
+          // loadTable();
+        });
+
+        $("#checklistTable").on("click", ".delete", function (event) {
+          // Access the clicked button's parent table row
+          var $clickedRow = $(this).closest("tr");
+          // Extract the data-id from the table row
+          deleteCheklistitem($clickedRow);
+          // deleteRow1($clickedRow);
+        });
+
+        $("#checklistcollapse").on(
+          "click",
+          ".delete-cart-item",
+          function (event) {
+            // Access the clicked button's parent table row
+            var $clickedRow = $(this).closest("tr");
+            // Extract the data-id from the table row
+            deleteCartItem($clickedRow);
+          }
+        );
+
+        $("#tbodyCheckListitemCodel").on(
+          "click",
+          ".delete-cart-item",
+          function (event) {
+            // Access the clicked button's parent table row
+            var $clickedRow = $(this).closest("tr");
+            // Extract the data-id from the table row
+            deleteCartItem2($clickedRow);
+          }
+        );
+
+        // offcanvas add
+        $("#addclit").on("click", function () {
+          console.log("Button clicked");
+          if($("#checklistitemName").val() != ""){
+            loadToCart();
+          }else{
+            alert("please Enter Valid ChecklistName");
+          }
+          
+          cartTableLoadOffCanvas();
+        });
+
+        // offcanvas add
+        $("#modelAddbtn").on("click", function () {
+          console.log("Button clicked");
+          loadModelToCart();
+          cartTableLoadModel();
+        });
+
+        //Save checklist
+        $("#btnsvecheck").on("click", function () {
+          console.log("Button clicked");
+          savechecklist();
+          getAllDataFromServer();
+        });
+
+        // add New checklist item
+        $("#addBtnNewitem").on("click", function () {
+          console.log("Button clicked");
+          addNewItem();
+          getAllDataFromServer();
+          // loadTable();
+        });
         // loadTable();
-      });
-
-      $("#checklistTable").on("click", ".delete", function (event) {
-        // Access the clicked button's parent table row
-        var $clickedRow = $(this).closest("tr");
-        // Extract the data-id from the table row
-        deleteCheklistitem($clickedRow);
-        // deleteRow1($clickedRow);
-      });
-
-      $("#checklistcollapse").on("click", ".delete-cart-item", function (event) {
-        // Access the clicked button's parent table row
-        var $clickedRow = $(this).closest("tr");
-        // Extract the data-id from the table row
-        deleteCartItem($clickedRow);
-      });
-
-      $("#tbodyCheckListitemCodel").on("click", ".delete-cart-item", function (event) {
-        // Access the clicked button's parent table row
-        var $clickedRow = $(this).closest("tr");
-        // Extract the data-id from the table row
-        deleteCartItem2($clickedRow);
-      });
-
-      // offcanvas add
-      $("#addclit").on("click", function () {
-        console.log("Button clicked");
-        loadToCart();
-        cartTableLoadOffCanvas();
-      });
-
-      // offcanvas add
-      $("#modelAddbtn").on("click", function () {
-        console.log("Button clicked");
-        loadModelToCart();
-        cartTableLoadModel();
-      });
-
-      //Save checklist
-      $("#btnsvecheck").on("click", function () {
-        console.log("Button clicked");
-        savechecklist();
         getAllDataFromServer();
+      })
+      .catch((error) => {
+        console.error("Initialization failed: ", error);
       });
-
-      // add New checklist item
-      $("#addBtnNewitem").on("click", function () {
-        console.log("Button clicked");
-        addNewItem();
-        getAllDataFromServer();
-        // loadTable();
-      });
-      // loadTable();
-      getAllDataFromServer();
-    }).catch((error) => {
-      console.error("Initialization failed: ", error);
-    });
-
   });
 
   function uuidv4() {
@@ -195,7 +214,6 @@ if (!this.Registraion) {
       }
     );
   }
-
 
   function checklistItemEditEventListner() {
     $("#checklistcollapse").on("click", ".edit", function () {
@@ -244,7 +262,6 @@ if (!this.Registraion) {
     });
   }
 
-
   // Fetch All Data From Server
   function getAllDataFromServer() {
     $.ajax({
@@ -257,17 +274,15 @@ if (!this.Registraion) {
       success: function (data) {
         getAlldata(data);
       },
-      error: function (xhr, error) { },
+      error: function (xhr, error) {},
     });
   }
   // SAVE NEW CHECKLSIT
   function savechecklist() {
     console.log("url : " + API_PATH);
 
-
     let checklistData1 =
       JSON.parse(localStorage.getItem("checklistData")) || [];
-
 
     localStorage.removeItem("checklistData");
     var offcanvasElement = document.getElementById("offcanvasExample");
@@ -346,7 +361,7 @@ if (!this.Registraion) {
       },
     });
   }
-  // Delete Checklist 
+  // Delete Checklist
   function deleteCheklist(id) {
     var hrefId = id;
     $.ajax({
@@ -360,7 +375,7 @@ if (!this.Registraion) {
       success: function (data) {
         getAllDataFromServer();
       },
-      error: function (xhr, error) { },
+      error: function (xhr, error) {},
     });
   }
   // Method For add Item To Checklist
@@ -372,21 +387,33 @@ if (!this.Registraion) {
     var hrefId = rawId;
     console.log("fetch all checklist");
     console.log("push new data to checklist");
+   
+    let MultiCheckListItemCreateDTO = {
+      checkListId: hrefId,
+      checkListItemCreateDTO: [],
+    };
+
+    // Loop through each item and create a new CheckListItemCreateDTO object for each one
     $.each(checklistitems[0].checkListItemDTO, function (index, value) {
-      CheckListItemCreateDTO.checkListId = hrefId;
-      CheckListItemCreateDTO.checklistItemName = value.checklistItemName;
-      CheckListItemCreateDTO.value = value.value;
-      CheckListItemCreateDTO.priorityLevel = value.priorityLevel;
+      let CheckListItemCreateDTO = {
+        checkListId: hrefId,
+        checklistItemName: value.checklistItemName,
+        value: value.value,
+        priorityLevel: value.priorityLevel,
+      };
+      MultiCheckListItemCreateDTO.checkListItemCreateDTO.push(
+        CheckListItemCreateDTO
+      );
     });
 
     $.ajax({
       method: "POST",
-      url: API_PATH + "/api/check-list-items",
+      url: API_PATH + "/api/check-list-items/multi-check-list-items",
       contentType: "application/json; charset=utf-8",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
-      data: JSON.stringify(CheckListItemCreateDTO),
+      data: JSON.stringify(MultiCheckListItemCreateDTO),
       success: function (data) {
         getAllDataFromServer();
       },
@@ -480,7 +507,7 @@ if (!this.Registraion) {
       success: function (data) {
         getAllDataFromServer();
       },
-      error: function (xhr, error) { },
+      error: function (xhr, error) {},
     });
   }
   //ADD To Cart
@@ -636,7 +663,6 @@ if (!this.Registraion) {
     $("#priorityModel").val($("#priority option:first").val());
   }
 
-
   // load CartItems
   function reloadByDelete(checkListItemDTO, checklistContent2) {
     $.each(checkListItemDTO, function (itemIndex, item) {
@@ -657,8 +683,7 @@ if (!this.Registraion) {
     return checklistContent2;
   }
 
-
-  // Load checklist Table 
+  // Load checklist Table
   function getAlldata(data) {
     console.log(data);
     $("#checklistTable").html(" ");
@@ -756,7 +781,6 @@ if (!this.Registraion) {
     $("#checklistcollapse").append(tbody);
     // }
   }
-
 
   function deleteCartItem2($clickedRow) {
     var hrefId = $clickedRow.attr("id");
