@@ -146,10 +146,9 @@ function BtnInitialise() {
   });
 
   $("#btnView").click(function () {
-    $("#LoadingModel").modal("show");
     var id = $(this).data("id");
     getSavedTestData(id)
-    
+    $("#ViewModal").modal("show");
   });
 }
 
