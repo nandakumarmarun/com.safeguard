@@ -2,6 +2,8 @@ var ContextPath = "";
 var API_PATH = "";
 var PORT = ""
 
+var path = location.protocol + "//" + location.host;
+
 $.getJSON("../config.json", async function (config) {
   ContextPath = config.HOST;
   PORT = config.PORT
@@ -50,6 +52,12 @@ $(document).ready(function () {
       let content = $(this).data("content");
       loadContent(content);
     });
+
+    $("#logOutbtn").click(function () {
+      localStorage.removeItem("token");
+      login();
+    });
+
   }).catch((error) => {
     console.error("Initialization failed: ", error);
   });
@@ -58,7 +66,11 @@ $(document).ready(function () {
 
 
 const redirect = async () => {
-  location.href = ContextPath + "/HTML/securitytest.html";
+  location.href = path + "/HTML/securitytest.html";
+};
+
+const login = async () => {
+  location.href = path + "/HTML/login.html";
 };
 
 

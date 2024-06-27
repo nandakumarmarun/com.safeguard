@@ -11,6 +11,8 @@ if (!this.Registraion) {
   var API_PATH = "";
   var PORT = ""
 
+  var path = location.protocol + "//" + location.host;
+
   function loadConfig() {
     return new Promise((resolve, reject) => {
       $.getJSON("../config.json", function (config) {
@@ -464,7 +466,7 @@ if (!this.Registraion) {
 
 
   const redirect = async () => {
-    location.href = ContextPath + "/HTML/dashboard"
+    location.href = path + "/HTML/dashboard.html"
   };
 
 

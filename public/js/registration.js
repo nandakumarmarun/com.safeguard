@@ -7,8 +7,8 @@ if (!this.Registraion) {
 (function () {
   "use strict";
 
-  var formContextPath =
-    location.protocol + "//" + location.host + location.pathname;
+  var Path =
+    location.protocol + "//" + location.host;
 
 
   var ContextPath = "";
@@ -108,7 +108,7 @@ if (!this.Registraion) {
     registrationModel.password = $("#inputPassword").val();
     $.ajax({
       method: "POST",
-      url: "http://localhost:8081/api/v1/user/register",
+      url: API_PATH + "/api/v1/user/register",
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify(registrationModel),
       success: function (data) {
@@ -131,7 +131,7 @@ if (!this.Registraion) {
     loginModel.password = data.password
     $.ajax({
       method: 'POST',
-      url: "http://localhost:8081/api/v1/auth/authenticate",
+      url: API_PATH + "/api/v1/auth/authenticate",
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify(loginModel),
       success: function (data) {
@@ -165,14 +165,14 @@ if (!this.Registraion) {
     return new Promise(resolve => setTimeout(resolve, delayInms));
   };
 
-  
+
   const sample = async () => {
     let delayres = await delay(3000);
-    location.href = "http://localhost:80/HTML/new"
+    location.href = Path + "/HTML/dashboard.html"
   };
 
 
-  
+
 
   Registraion.showModalPopup = function (el, id, action, obj) {
     resetForm();
@@ -212,7 +212,7 @@ if (!this.Registraion) {
     formModel.pid = null; // reset form model;
   }
 
- 
 
-  
+
+
 })();
