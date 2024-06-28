@@ -7,11 +7,10 @@ if (!this.Registraion) {
 (function () {
   "use strict";
 
-  // var ContextPath = location.protocol + "//" + location.host;
+  var path = location.protocol + "//" + location.host;
 
   var ContextPath = "";
   var API_PATH = "";
-
 
   function loadConfig() {
     return new Promise((resolve, reject) => {
@@ -19,9 +18,9 @@ if (!this.Registraion) {
         if (config.HOST && config.PORT) {
           ContextPath = config.HOST;
           var PORT = config.PORT;
-          if(config.PROFILE == "dev"){
+          if (config.PROFILE == "dev") {
             API_PATH = ContextPath + ":" + PORT;
-          }else if(config.PROFILE == "Prod"){
+          } else if (config.PROFILE == "Prod") {
             API_PATH = ContextPath;
           }
           console.log("properties " + API_PATH);
@@ -126,6 +125,11 @@ if (!this.Registraion) {
         checkListItemBtnChange();
         checklistItemEditEventListner();
         checkListAddBtnEventListener();
+
+        $("#logOut").click(function (e) {
+          logOut();
+        });
+
         $("#checklistTable").on("click", ".delete1", function (event) {
           // Access the clicked button's parent table row
           var clickedRow = $(this).closest("tr");
@@ -170,12 +174,12 @@ if (!this.Registraion) {
         // offcanvas add
         $("#addclit").on("click", function () {
           console.log("Button clicked");
-          if($("#checklistitemName").val() != ""){
+          if ($("#checklistitemName").val() != "") {
             loadToCart();
-          }else{
+          } else {
             alert("please Enter Valid ChecklistName");
           }
-          
+
           cartTableLoadOffCanvas();
         });
 
@@ -207,6 +211,11 @@ if (!this.Registraion) {
         console.error("Initialization failed: ", error);
       });
   });
+
+
+  const logOut = async () => {
+    location.href = path + "/HTML/login.html";
+  };
 
   function uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -391,7 +400,7 @@ if (!this.Registraion) {
     var hrefId = rawId;
     console.log("fetch all checklist");
     console.log("push new data to checklist");
-   
+
     let MultiCheckListItemCreateDTO = {
       checkListId: hrefId,
       checkListItemCreateDTO: [],
