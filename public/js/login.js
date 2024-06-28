@@ -13,12 +13,38 @@ if (!this.Form) {
 
   var path = location.protocol + "//" + location.host;
 
+  function loadConfig() {
+    return new Promise((resolve, reject) => {
+      $.getJSON("../config.json", function (config) {
+        if (config.HOST && config.PORT) {
+          ContextPath = config.HOST;
+          var PORT = config.PORT;
+          if(config.PROFILE == "dev"){
+            API_PATH = ContextPath + ":" + PORT;
+          }else if(config.PROFILE == "Prod"){
+            API_PATH = ContextPath;
+          }
+          console.log("properties " + API_PATH);
+          console.log("HOST:", config.HOST);
+          resolve();
+        } else {
+          console.error("Error: HOST or PORT not found in config.json");
+          reject("Invalid config");
+        }
+      }).fail(function (jqxhr, textStatus, error) {
+        var err = textStatus + ", " + error;
+        console.error("Request Failed: " + err);
+        reject(err);
+      });
+    });
+  }
+
   // location.protocol + "//" + location.host;
 
   $.getJSON("../config.json", function (config) {
     ContextPath = config.HOST;
     Port = config.PORT;
-    API_PATH = ContextPath + ":" + config.PORT
+    API_PATH = ContextPath + ":" + config.PORT;
     console.log("properties");
     console.log("HOST:", config.HOST);
   });
@@ -57,48 +83,54 @@ if (!this.Form) {
   };
 
   $(document).ready(function () {
-
-    $('#regpage').click(function (e) {
-      regPage();
+    loadConfig()
+    .then(() => {
+      console.log(API_PATH);
+      $("#regpage").click(function (e) {
+        regPage();
+      });
+  
+      // add the rule here
+      $.validator.addMethod(
+        "valueNotEquals",
+        function (value, element, arg) {
+          return arg != value;
+        },
+        ""
+      );
+  
+      createEditForm.validate({
+        rules: validationRules,
+        messages: validationMessages,
+        submitHandler: function (form) {
+          createUpdateForm();
+        },
+      });
+  
+      deleteForm.submit(function (e) {
+        e.preventDefault();
+        deleteForm1(e.currentTarget.action);
+      });
+    })
+    .catch((error) => {
+      console.error("Initialization failed: ", error);
     });
 
-    // add the rule here
-    $.validator.addMethod(
-      "valueNotEquals",
-      function (value, element, arg) {
-        return arg != value;
-      },
-      ""
-    );
 
-    createEditForm.validate({
-      rules: validationRules,
-      messages: validationMessages,
-      submitHandler: function (form) {
-        createUpdateForm();
-      },
-    });
 
-    deleteForm.submit(function (e) {
-      // prevent Default functionality
-      e.preventDefault();
-      // pass the action-url of the form
-      deleteForm1(e.currentTarget.action);
-    });
+    
   });
 
-
-
   function createUpdateForm() {
-    loginModel.login = $('#form-name').val();
-    loginModel.password = $('#form-password').val();
+    loginModel.login = $("#form-name").val();
+    loginModel.password = $("#form-password").val();
     $.ajax({
-      method: 'POST',
+      method: "POST",
       url: API_PATH + "/api/v1/auth/authenticate",
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify(loginModel),
       success: function (data) {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
         const Toast = Swal.mixin({
           toast: true,
           position: "top-end",
@@ -108,11 +140,11 @@ if (!this.Form) {
           didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;
             toast.onmouseleave = Swal.resumeTimer;
-          }
+          },
         });
         Toast.fire({
           icon: "success",
-          title: "Signed in successfully"
+          title: "Signed in successfully",
         });
         setuserName();
       },
@@ -122,26 +154,26 @@ if (!this.Form) {
           title: "Oops...",
           text: "Check Your Credentials!",
         });
-      }
+      },
     });
   }
 
   const delay = (delayInms) => {
-    return new Promise(resolve => setTimeout(resolve, delayInms));
+    return new Promise((resolve) => setTimeout(resolve, delayInms));
   };
 
   const regPage = async () => {
-    location.href = path + "/HTML/registraiton.html"
+    location.href = path + "/HTML/registraiton.html";
   };
 
   const sample = async () => {
     let delayres = await delay(2000);
-    location.href = path + "/HTML/dashboard.html"
+    location.href = path + "/HTML/dashboard.html";
   };
 
   const adminPage = async () => {
     let delayres = await delay(2000);
-    location.href = path + "/HTML/checklist.html"
+    location.href = path + "/HTML/checklist.html";
   };
 
   function setuserName() {
@@ -150,7 +182,7 @@ if (!this.Form) {
       url: API_PATH + "/api/v1/user/current-session",
       contentType: "application/json; charset=utf-8",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token") // Add the Bearer token here
+        Authorization: "Bearer " + localStorage.getItem("token"), // Add the Bearer token here
       },
       success: function (data) {
         if (data.roles == "USER") {
@@ -159,15 +191,9 @@ if (!this.Form) {
           adminPage();
         }
       },
-      error: function (xhr, error) {
-      },
+      error: function (xhr, error) {},
     });
   }
-
-
-
-
-
 
   // function onSaveSuccess(result) {
   //   // reloading page to see the updated data

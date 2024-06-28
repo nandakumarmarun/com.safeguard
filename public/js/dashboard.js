@@ -1,16 +1,7 @@
 var ContextPath = "";
 var API_PATH = "";
-var PORT = ""
 
 var path = location.protocol + "//" + location.host;
-
-$.getJSON("../config.json", async function (config) {
-  ContextPath = config.HOST;
-  PORT = config.PORT
-  API_PATH = ContextPath + ":" + PORT;
-  console.log("properties" + API_PATH);
-  console.log("HOST:", config.HOST);
-});
 
 
 function loadConfig() {
@@ -18,8 +9,12 @@ function loadConfig() {
     $.getJSON("../config.json", function (config) {
       if (config.HOST && config.PORT) {
         ContextPath = config.HOST;
-        PORT = config.PORT;
-        API_PATH = ContextPath + ":" + PORT;
+        var PORT = config.PORT;
+        if(config.PROFILE == "dev"){
+          API_PATH = ContextPath + ":" + PORT;
+        }else if(config.PROFILE == "Prod"){
+          API_PATH = ContextPath;
+        }
         console.log("properties " + API_PATH);
         console.log("HOST:", config.HOST);
         resolve();

@@ -1,4 +1,5 @@
 {
-    "HOST": "http://localhost",
-    "PORT": 8081
+    "HOST": "https://safe-guard.onrender.com",
+    "PORT": 8081,
+    "PROFILE" : "Prod"
 }
