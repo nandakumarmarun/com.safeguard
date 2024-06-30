@@ -55,3 +55,8 @@ body {
     color: #00CC00;
     /* green */
 }
+
+
+.bg-trans-dark{
+    background: rgba(0, 0, 0, 0.395);
+}

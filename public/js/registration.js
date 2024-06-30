@@ -98,6 +98,12 @@ if (!this.Registraion) {
           location.href = path + "/HTML/login.html";
         });
 
+        $("#loginBTn").click(function () {
+          localStorage.removeItem("token");
+          login();
+        });
+    
+
         // add the rule here
         $.validator.addMethod(
           "valueNotEquals",
@@ -195,7 +201,6 @@ if (!this.Registraion) {
   };
 
   const login = async () => {
-    let delayres = await delay(3000);
     location.href = Path + "/HTML/login.html";
   };
 
