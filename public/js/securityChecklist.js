@@ -18,9 +18,9 @@ if (!this.Registraion) {
         if (config.HOST && config.PORT) {
           ContextPath = config.HOST;
           var PORT = config.PORT;
-          if(config.PROFILE == "dev"){
+          if (config.PROFILE == "dev") {
             API_PATH = ContextPath + ":" + PORT;
-          }else if(config.PROFILE == "Prod"){
+          } else if (config.PROFILE == "Prod") {
             API_PATH = ContextPath;
           }
           console.log("properties " + API_PATH);
@@ -218,8 +218,8 @@ if (!this.Registraion) {
 
   function CreateCompanies() {
     CompanyCreateDTO.companyName = $("#checklistitemNameModel").val();
-    CompanyCreateDTO.address = $("#systemNo").val();
-    CompanyCreateDTO.contact = $("#projectName").val();
+    CompanyCreateDTO.address = $("#address").val();
+    CompanyCreateDTO.contact = $("#Phone").val();
     $.ajax({
       method: "POST",
       url: API_PATH + "/api/companies",

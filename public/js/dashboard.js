@@ -76,10 +76,12 @@ function loadContent(data) {
     loadTable();
     setChartData();
     BtnInitialise();
+    $("#LoadingModel2").modal("hide");
   } else if (data == "profile") {
     $("#LoadingModel2").modal("show");
     GetProfile();
     setuserData();
+    $("#LoadingModel2").modal("hide");
   } else if (data == "Companies") {
     getCompanies();
     $('.table-custom').css({
@@ -91,9 +93,7 @@ function loadContent(data) {
     $('.table-custom').css({
       transform: 'scale(1)',
     });
-    loadTestTable()
-    
-  } else if (data == "logout") {
+    loadTestTable() 
   }
 }
 

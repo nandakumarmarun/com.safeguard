@@ -71,7 +71,14 @@ function setuserData() {
       $("#inputfirstname").val(data.firstName);
       $("#inputLastname").val(data.lastName);
       $("#inputEmail").val(data.email);
-      $("#LoadingModel2").modal("hide");
+      var loadingModal = $("#LoadingModel2");
+      console.log(loadingModal);
+      if (loadingModal.length) {
+        loadingModal.modal("hide");
+        console.log("Modal hidden successfully");
+      } else {
+        console.error("Modal element not found");
+      }
     },
     error: function (xhr, error) {
     },
